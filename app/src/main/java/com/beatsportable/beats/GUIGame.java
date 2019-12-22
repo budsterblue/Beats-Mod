@@ -4,7 +4,10 @@ import java.io.File;
 import java.util.HashMap;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.*;
 import android.graphics.Bitmap.Config;
@@ -920,12 +923,24 @@ public class GUIGame extends Activity {
 	private void pauseGame(boolean screenshot, boolean showText) {
 		stopGame(Tools.getString(R.string.GUIGame_paused), 255, 190, 0, screenshot, showText); // gold
 	}
+
+	public static void triggerRebirth(Context context) {
+		PackageManager packageManager = context.getPackageManager();
+		Intent intent = packageManager.getLaunchIntentForPackage(context.getPackageName());
+		ComponentName componentName = intent.getComponent();
+		Intent mainIntent = Intent.makeRestartActivityTask(componentName);
+		context.startActivity(mainIntent);
+		Runtime.getRuntime().exit(0);
+	}
+
 	private void exitGame() {
 		stopGame(Tools.getString(R.string.GUIGame_exiting), 0, 64, 255, false, true); // royal blue
 		int hardwareAccelerate = Integer.valueOf(
 				Tools.getSetting(R.string.hardwareAccelerate, R.string.hardwareAccelerateDefault));
 		if (hardwareAccelerate == 0) {
-			throw new RuntimeException("This is such a stupid way of fixing a game freeze but oh well");
+			triggerRebirth(this);
+			//throw new RuntimeException("This is such a stupid way of fixing a game freeze but oh well");
+
 		}
 	}
 	private void resumeGame() {
