@@ -1,10 +1,10 @@
 package com.beatsportable.beats;
 
+import android.support.annotation.NonNull;
+
 import java.util.AbstractQueue;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.NoSuchElementException;
-import java.util.Random;
 
 /** An array-based queue. **/
 public class ToolsArrayQueue<T> extends AbstractQueue<T> {
@@ -14,9 +14,9 @@ public class ToolsArrayQueue<T> extends AbstractQueue<T> {
 	  killed the framerate (probably because clear() would be O(n) instead of O(1))
 	  but that may have been an illusion. */
 	
-	protected T[] elements;
+	private T[] elements;
 	protected int start = 0; //Index of first element 
-	protected int end = 0; //Index of element after last element
+	private int end = 0; //Index of element after last element
 	/* Elements are stored in the range:   [start, end) mod elements.length
 	   If start == end, the queue is empty. (Therefore the array can never be completely full.)
 	   Elements are added to the end and removed from the start. */
@@ -24,6 +24,7 @@ public class ToolsArrayQueue<T> extends AbstractQueue<T> {
 	public ToolsArrayQueue() {
 		this(32);
 	}
+
 	@SuppressWarnings("unchecked")
 	public ToolsArrayQueue(int capacity) {
 		elements = (T[]) new Object[capacity];
@@ -39,6 +40,7 @@ public class ToolsArrayQueue<T> extends AbstractQueue<T> {
 	public T poll() {
 		if (end == start) return null;
 		T out = elements[start];
+		elements[start] = null;
 		start = inc(start);
 		return out;
 	}
@@ -64,7 +66,8 @@ public class ToolsArrayQueue<T> extends AbstractQueue<T> {
 	
 	@Override
 	public boolean isEmpty() { return end == start; }
-	
+
+	@NonNull
 	@Override
 	public Iterator<T> iterator() {
 		return new Iterator<T>() {
@@ -89,15 +92,17 @@ public class ToolsArrayQueue<T> extends AbstractQueue<T> {
 			}
 		};
 	}
-	
+
+	@NonNull
 	@Override
 	public Object[] toArray() {
 		Object[] o = new Object[size()];
 		arraycopy(o, 0);
 		return o;
 	}
-	
+
 	@SuppressWarnings("unchecked")
+	@NonNull
 	@Override
 	public <U> U[] toArray(U[] a) {
 		int size = size();
@@ -112,6 +117,7 @@ public class ToolsArrayQueue<T> extends AbstractQueue<T> {
 	public void clear() {
 		start = 0;
 		end = 0;
+		elements = null;
 	}
 	
 	// ======== Helpers ========
@@ -167,7 +173,7 @@ public class ToolsArrayQueue<T> extends AbstractQueue<T> {
 	}
 	
 	//TODO can this be addAll?
-	public boolean addQueue(ToolsArrayQueue<T> that) {
+	public void addQueue(ToolsArrayQueue<T> that) {
 		int thatsize = that.size();
 		ensureCapacity(size() + thatsize);
 		
@@ -176,7 +182,6 @@ public class ToolsArrayQueue<T> extends AbstractQueue<T> {
 		
 		end += thatsize;
 		if (end >= elements.length) end -= elements.length;
-		return true;
 	}
 	
 	/*
@@ -207,8 +212,8 @@ public class ToolsArrayQueue<T> extends AbstractQueue<T> {
 	 * @param copyLen number of elements to copy
 	 * @return number of elements copied = copyLen
 	 */
-	private static final int arraycopy(Object src, int srcCap, int srcStart,
-			                           Object dest, int destPos, int copyLen) {
+	private static int arraycopy(Object src, int srcCap, int srcStart,
+								 Object dest, int destPos, int copyLen) {
 		if (srcStart + copyLen <= srcCap) {
 			System.arraycopy(src, srcStart, dest, destPos, copyLen);
 		} else {
@@ -227,9 +232,9 @@ public class ToolsArrayQueue<T> extends AbstractQueue<T> {
 	 *  Warning: this does not verify that copyLen < src.size() or copyLen < dest.size()
 	 *  
 	 *  Returns # elements copied = copyLen */
-	private static final int arraycopy(Object src, int srcCap, int srcStart,
-			                           Object dest, int destCap, int destStart,
-			                           int copyLen) {
+	private static void arraycopy(Object src, int srcCap, int srcStart,
+								  Object dest, int destCap, int destStart,
+								  int copyLen) {
 		if (destStart + copyLen <= destCap) {
 			arraycopy(src, srcCap, srcStart, dest, destStart, copyLen);
 		} else {
@@ -240,17 +245,16 @@ public class ToolsArrayQueue<T> extends AbstractQueue<T> {
 			arraycopy(src, srcCap, start2, dest, 0, copyLen - array1len);
 			arraycopy(src, srcCap, srcStart, dest, destStart, array1len);
 		}
-		return copyLen;
 	}
 	
 	// ======== Tester ==========
-	private static final String assertequal(String msg, Object a, Object b) {
+	/*private static String assertequal(String msg, Object a, Object b) {
 		if ((a == null && b == null) || (a != null && a.equals(b)))
 			return "";
 		else
 			return String.format(msg, a, b);
 	}
-	public static final void test() {
+	public static void test() {
 		Random r = new Random();
 		String msg = "";
 		while (true) {
@@ -291,7 +295,7 @@ public class ToolsArrayQueue<T> extends AbstractQueue<T> {
 			}
 			int size = taq.size();
 			System.out.println("size: " + size);
-			Integer[] fromArr = (Integer[]) taq.toArray(new Integer[size]);
+			Integer[] fromArr = taq.toArray(new Integer[size]);
 			Integer[] fromIt = new Integer[size];
 			int idx = 0; for (Integer ii: taq) { fromIt[idx++] = ii; }
 			System.out.print(assertequal("fromIt size: expected %d got %d\n", size, idx));
@@ -305,7 +309,7 @@ public class ToolsArrayQueue<T> extends AbstractQueue<T> {
 			System.out.print(assertequal("size: expected %d got %d\n", 0, taq.size()));
 			System.out.println("equality check done");
 		}
-	}
+	}*/
 
 	//public static void main(String[] args) { test(); }
 

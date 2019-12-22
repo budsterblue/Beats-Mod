@@ -224,7 +224,7 @@ public class DataParserSM {
 						if (nt.equals(NoteType.HOLD_START)) {
 							activeHolds.add(i);
 						} else if (nt.equals(NoteType.HOLD_END) && activeHolds.contains(i)) {
-							activeHolds.remove(activeHolds.indexOf(i));
+							activeHolds.remove((Integer) i);
 						} else if (randomize) {
 							pitch = rand.nextPitch(jumps);
 						}
@@ -264,7 +264,7 @@ public class DataParserSM {
 		float beat = 0f;
 		float time = 0;
 		String line = "";
-		String measure = "";
+		String measure;
 
 		Queue<Float> stopsBeat = df.getStopsBeat();
 		Queue<Float> stopsValue = df.getStopsValue();
@@ -358,7 +358,7 @@ public class DataParserSM {
 		
 		Scanner ndsc = new Scanner(buffer);
 		ndsc.useDelimiter(":");
-		String nbuffer = "";
+		String nbuffer;
 		DataNotesData nd = new DataNotesData();
 		
 		try {			
@@ -455,7 +455,7 @@ public class DataParserSM {
 		File f = new File(df.getFilename());
 		Scanner sc = new Scanner(f, "UTF-8"); // For all us otaku out there!
 		sc.useDelimiter(";");
-		String buffer = "";
+		String buffer;
 		try {
 			while (sc.hasNext()) {
 				buffer = sc.next().trim();

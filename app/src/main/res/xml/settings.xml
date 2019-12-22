@@ -55,6 +55,13 @@
 			android:defaultValue="@string/noteAppearanceDefault"
 			android:entries="@array/noteAppearance"
 			android:entryValues="@array/noteAppearanceValues" />
+			<ListPreference
+				android:title="@string/colorHoldsTitle"
+				android:summary="@string/colorHoldsDesc"
+				android:key="@string/colorHolds"
+				android:defaultValue="@string/colorHoldsDefault"
+				android:entries="@array/toggle"
+				android:entryValues="@array/toggleValues" />
 		</PreferenceCategory>
 		<PreferenceCategory android:title="@string/notesCategoryTitle">
 		<ListPreference

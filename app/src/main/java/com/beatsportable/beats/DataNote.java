@@ -1,5 +1,7 @@
 package com.beatsportable.beats;
 
+import android.annotation.SuppressLint;
+
 import java.util.ArrayList;
 
 public class DataNote implements Comparable<DataNote> {
@@ -33,6 +35,7 @@ public class DataNote implements Comparable<DataNote> {
 	}
 	
 	// For debugging
+	@SuppressLint("DefaultLocale")
 	public String toString() {
 		return String.format(
 				"%10s 1/%3d   %s @%7d  b%3e",

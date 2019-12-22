@@ -11,12 +11,12 @@ public class DataParserException extends Exception {
 	
 	public DataParserException(String msg, Throwable tr) {
 		super(msg);
-		Log.e("DataParserException Stack Trace", Log.getStackTraceString(tr));
+		Log.e("DPE Stack Trace", Log.getStackTraceString(tr));
 	}
 	
 	public DataParserException(String exceptionName, String msg, Throwable tr) {
 		super(exceptionName + ": " + msg);
-		Log.e("DataParserException Stack Trace", Log.getStackTraceString(tr));
+		Log.e("DPE Stack Trace", Log.getStackTraceString(tr));
 	}
 	
 	/*

@@ -80,9 +80,9 @@ public class DataFile {
 		} else {
 			String b; // Basename
 			b = Tools.getBasename(s);
-			for (int i = 0; i < suffixe.length; i++) {
-				for (int j = 0; j < exts.length; j++) {
-					f = new File(path + b + suffixe[i] + exts[j]);
+			for (String item : suffixe) {
+				for (String ext : exts) {
+					f = new File(path + b + item + ext);
 					if (f.exists()) {
 						return f;
 					}
@@ -90,9 +90,9 @@ public class DataFile {
 			}
 			// Try with filename
 			b = Tools.getBasename(filename);
-			for (int i = 0; i < suffixe.length; i++) {
-				for (int j = 0; j < exts.length; j++) {
-					f = new File(path + b + suffixe[i] + exts[j]);
+			for (String value : suffixe) {
+				for (String ext : exts) {
+					f = new File(path + b + value + ext);
 					if (f.exists()) {
 						return f;
 					}

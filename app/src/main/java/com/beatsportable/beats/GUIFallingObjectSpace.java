@@ -1,5 +1,7 @@
 package com.beatsportable.beats;
 
+import android.support.annotation.NonNull;
+
 import java.util.Iterator;
 
 public class GUIFallingObjectSpace implements Iterable<GUIFallingObject> {
@@ -76,14 +78,12 @@ public class GUIFallingObjectSpace implements Iterable<GUIFallingObject> {
 						o = new GUIFallingArrow(currentNote);
 						break;
 					case HOLD_START:
-						if (!ALLOW_HOLDS) break;
-						GUIFallingHold h = new GUIFallingHold(currentNote); 
+						GUIFallingHold h = new GUIFallingHold(currentNote);
 						holds_to_create[pitch] = h;
 						o = h;
 						score.holdCount++;
 						break;
 					case HOLD_END:
-						if (!ALLOW_HOLDS) break;
 						if (holds_to_create[pitch] != null) {
 							holds_to_create[pitch].end_time = currentNote.time;
 							holds_to_create[pitch] = null;
@@ -109,26 +109,24 @@ public class GUIFallingObjectSpace implements Iterable<GUIFallingObject> {
 		else return available[pitch].peek();
 	}
 	
-	public GUIFallingObject popColumn(int pitch) {
+	public void popColumn(int pitch) {
 		/* return and remove the earliest available (i.e. non-missed) note in a column */
-		if (available[pitch].isEmpty()) return null;
+		if (available[pitch].isEmpty()) return;
 		
 		_last_fetchAll_arr = null;
 		GUIFallingObject o = available[pitch].remove();
 		done[pitch].add(o);
-		return o;
 	}
 	
-	public GUIFallingObject missColumn(int pitch) {
+	public void missColumn(int pitch) {
 		/* return the earliest available (i.e. non-missed) note in a column,
 		 * and set its missed status to true */
-		if (available[pitch].isEmpty()) return null;
+		if (available[pitch].isEmpty()) return;
 		
 		_last_fetchAll_arr = null;
 		GUIFallingObject o = available[pitch].remove();
 		o.missed = true;
 		missed[pitch].add(o);
-		return o;
 	}
 	
 	public boolean isDone() {
@@ -148,7 +146,8 @@ public class GUIFallingObjectSpace implements Iterable<GUIFallingObject> {
 	}
 	
 	private ToolsArrayQueue<GUIFallingObject> _iter_Q = new ToolsArrayQueue<GUIFallingObject>();
-	
+
+	@NonNull
 	public Iterator<GUIFallingObject> iterator() {
 		/* Iterate through the falling objects, in no particular order. */
 		_iter_Q.clear();

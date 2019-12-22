@@ -53,6 +53,8 @@
   <string name="noteAppearanceDesc">"Visibility of notes"</string>
   <string name="darkTitle">"Dark"</string>
   <string name="darkDesc">"Hide tap arrows"</string>
+  <string name="colorHoldsTitle">"Color Holds"</string>
+  <string name="colorHoldsDesc">"Use a solid color for holds. Increases framerate at the cost of looking terrible."</string>
   <string name="holdsTitle">"Holds"</string>
   <string name="holdsDesc">"Notes that have to be held down"</string>
   <string name="jumpsTitle">"Jumps"</string>

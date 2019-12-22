@@ -2,8 +2,11 @@ package com.beatsportable.beats;
 
 import com.beatsportable.beats.GUIScore.AccuracyTypes;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Path.Direction;
+import android.graphics.RectF;
 import android.graphics.Region.Op;
 
 public class GUIFallingHold extends GUIFallingObject {
@@ -32,11 +35,14 @@ public class GUIFallingHold extends GUIFallingObject {
 	private boolean hasBeenHit = false;
 	private boolean ok_override = false; // set to true if we're close enough to the end to count an ok
 	public boolean hasStartedVibrating = false;
-	
+	private boolean colorHolds = Tools.getBooleanSetting(R.string.colorHolds, R.string.colorHoldsDefault);
+	private Paint paint = new Paint();
+
 	GUIFallingHold(DataNote n) {
 		super(n, n.fraction, n.column, n.time, n.time + MAX_HOLD_MS);
 		original_starttime = n.time;
 		clicked = false;
+
 	}
 
 	//public int fraction() { return fraction; }
@@ -51,18 +57,18 @@ public class GUIFallingHold extends GUIFallingObject {
 		int end_rect_bottom = end_rect_top + Tools.button_h;
 		int rect_left = drawarea.pitchToX(pitch);
 		int rect_right = rect_left + Tools.button_w;
-		
+
 		int win_h = canvas.getHeight();
 		//int win_w = canvas.getWidth();
-		
+
 		boolean fallingDown = start_rect_top > end_rect_top;
-		
+
 		int hold_rect_top, hold_rect_bottom; //bounding box for hold rectangle
 		int hold_draw_start, hold_draw_end, hold_draw_add; // parameters to draw loop
 		if (fallingDown) { //arrows falling down
 		    hold_rect_top = end_rect_top + Tools.button_h/2;
 		    hold_rect_bottom = start_rect_top + Tools.button_h/2;
-		    
+
 		    hold_draw_start = drawarea.timeToY(original_starttime) + Tools.button_h / 2 - holdimg_h;
 		    hold_draw_end = ((end_rect_top > 0) ? end_rect_top : 0) - holdimg_h;
 		    hold_draw_add = -holdimg_h;
@@ -74,45 +80,52 @@ public class GUIFallingHold extends GUIFallingObject {
 		    hold_draw_end = ((end_rect_bottom < win_h) ? end_rect_bottom : win_h);
 		    hold_draw_add = holdimg_h;
 		}
-		
+
 		//body
-		
+
 		Path path = new Path();
 		//TODO diagonal clip paths for up/down arrows (straight for left/right)
 		path.addRect(rect_left, hold_rect_top, rect_right, hold_rect_bottom, Direction.CCW);
-		
+
 		canvas.clipPath(path, Op.INTERSECT);
-		
-		//need to swap comparison direction based on motion direction, hence xor
-		for (int y = hold_draw_start; (y <= hold_draw_end) ^ fallingDown; y += hold_draw_add) {
+
+		if(!colorHolds){
+			//need to swap comparison direction based on motion direction, hence xor
+			for (int y = hold_draw_start; (y <= hold_draw_end) ^ fallingDown; y += hold_draw_add) {
+				canvas.drawBitmap(
+						drawarea.getBitmap(
+								holdRsrc(mode, false),
+								Tools.button_w, holdimg_h
+						),
+						rect_left, y, null);
+			}
+			drawarea.setClip_arrowSpace(canvas);
+
+			//end arrow (top)
 			canvas.drawBitmap(
 					drawarea.getBitmap(
-							holdRsrc(mode, false),
-							Tools.button_w, holdimg_h
-							), 
-					rect_left, y, null);
+							holdRsrc(mode, true),
+							Tools.button_w, Tools.button_h
+					),
+					rect_left, end_rect_top, null
+			);
+		} else {
+			canvas.drawColor(Color.parseColor("#eeeb01"));
+			drawarea.setClip_arrowSpace(canvas);
+			RectF rectF = new RectF(rect_left, end_rect_top, rect_right, end_rect_bottom);
+			paint.setColor(Color.parseColor("#eeeb01"));
+			canvas.drawArc(rectF, 0F, 180F, true, paint);
 		}
-		
-		drawarea.setClip_arrowSpace(canvas);
-		
-		//end arrow (top)
-		canvas.drawBitmap(
-				drawarea.getBitmap(
-						holdRsrc(mode, true),
-						Tools.button_w, Tools.button_h
-						),
-				rect_left, end_rect_top, null
-				);
-		
+
 		//start arrow (bottom)
 		canvas.drawBitmap(
 				drawarea.getBitmap(
 						GUINoteImage.rsrc(pitch, fraction, clicked),
 						Tools.button_w, Tools.button_h
-						), 
+						),
 				rect_left, start_rect_top, null
 				);
-		
+
 		//debug
 		
 		/*Paint p = new Paint();

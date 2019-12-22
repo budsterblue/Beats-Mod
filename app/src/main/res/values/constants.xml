@@ -54,6 +54,8 @@
 	<string name="noteAppearanceDefault">"0"</string>
 	<string name="dark">"dark"</string>
 	<string name="darkDefault">"0"</string>
+	<string name="colorHolds">"colorHolds"</string>
+	<string name="colorHoldsDefault">"0"</string>
 	<string name="holds">"holds"</string>
 	<string name="holdsDefault">"1"</string>
 	<string name="jumps">"jumps"</string>
