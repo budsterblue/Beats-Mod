@@ -53,6 +53,9 @@ public class GUIGame extends Activity {
 	private int manualOGGOffset;
 	
 	private static final int ROTATABLE = 2;
+
+	//for LRU Cache
+	public static GUINoteImage noteimage = new GUINoteImage();
 	
 	private GUIDrawingArea drawarea = new GUIDrawingArea() {
 		
@@ -141,6 +144,15 @@ public class GUIGame extends Activity {
 		super.onCreate(savedInstanceState);
 		Tools.setContext(this);
 		System.gc(); // Request for garbage collection and hope it runs before updating starts
+
+		int[] pitch_to_display = {0,1,2,3};
+		int[] fraction = {0,4,8,12,16,24,32,48,64,192};
+
+		for (int i : fraction){
+			for (int j : pitch_to_display){
+				noteimage.addBitmapToMemoryCache(j, i, false);
+			}
+		}
 		// Get settings
 		/*
 		int priority = Integer.valueOf(
@@ -996,7 +1008,7 @@ public class GUIGame extends Activity {
 	@Override
 	protected void onDestroy() {
 		Log.d("GUIGame", "GUIGame destroyed.");
-		clearBitmaps();
+		//clearBitmaps();
 		exitGame();
 		mp.onDestroy();
 		h.releaseVibrator();

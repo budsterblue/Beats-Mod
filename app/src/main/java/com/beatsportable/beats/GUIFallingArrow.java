@@ -1,5 +1,6 @@
 package com.beatsportable.beats;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 public class GUIFallingArrow extends GUIFallingObject{
@@ -22,12 +23,20 @@ public class GUIFallingArrow extends GUIFallingObject{
 		//int rect_bottom = rect_top + 64;
 		int rect_left = drawarea.pitchToX(pitch);
 		//int rect_right = rect_left + 64;
-		canvas.drawBitmap(
+		/*canvas.drawBitmap(
 				drawarea.getBitmap(
 						GUINoteImage.rsrc(pitch_to_display, fraction, false),
 						Tools.button_w, Tools.button_h  
 						),
 				rect_left, rect_top, null
-				);
+				);*/
+		Bitmap bitmap = GUIGame.noteimage.getBitmapFromMemCache(String.valueOf(pitch_to_display + fraction));
+		if (bitmap != null) {
+			canvas.drawBitmap(bitmap, rect_left, rect_top, null);
+		} else {
+			GUIGame.noteimage.addBitmapToMemoryCache(pitch_to_display, fraction, false);
+			bitmap = GUIGame.noteimage.getBitmapFromMemCache(String.valueOf(pitch_to_display + fraction));
+			canvas.drawBitmap(bitmap, rect_left, rect_top, null);
+		}
 	}	
 }

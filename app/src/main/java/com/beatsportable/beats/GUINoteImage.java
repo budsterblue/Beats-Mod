@@ -1,6 +1,10 @@
 package com.beatsportable.beats;
 
-import android.graphics.Color;
+//import android.graphics.Color;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.LruCache;
 
 public class GUINoteImage {
 	
@@ -27,7 +31,7 @@ public class GUINoteImage {
 		//return missed ? "/osu/osu_beat_miss : "/osu/osu_beat_hit;
 	//}
 	public static final int OSU_FRACTION_MAX = 4;
-	public static String osu_beat(int _measurefraction) {
+	/*public static String osu_beat(int _measurefraction) {
 		switch (_measurefraction) {
 			default:
 			case 1: return "/osu/osu_beat_1.png";
@@ -45,7 +49,46 @@ public class GUINoteImage {
 			case 4: return Color.GREEN;
 			default: return Color.WHITE; // Something is wrong
 		}
+	}*/
+
+	private LruCache<String, Bitmap> memoryCache;
+	public GUINoteImage(){
+		// Get max available VM memory, exceeding this amount will throw an
+		// OutOfMemory exception. Stored in kilobytes as LruCache takes an
+		// int in its constructor.
+		final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+
+		// Use 1/8th of the available memory for this memory cache.
+		final int cacheSize = maxMemory / 8;
+
+		memoryCache = new LruCache<String, Bitmap>(cacheSize) {
+			@Override
+			protected int sizeOf(String key, Bitmap bitmap) {
+				// The cache size will be measured in kilobytes rather than
+				// number of items.
+				return bitmap.getByteCount() / 1024;
+			}
+		};
 	}
+
+	public void addBitmapToMemoryCache(int pitch_to_display, int fraction, boolean _clicked) {
+		String key = String.valueOf(pitch_to_display + fraction);
+		if (getBitmapFromMemCache(key) == null) {
+			memoryCache.put(key, getBitmapReloaded(rsrc(pitch_to_display, fraction, _clicked), Tools.button_w, Tools.button_h));
+		}
+	}
+
+	public Bitmap getBitmapFromMemCache(String key) {
+		return memoryCache.get(key);
+	}
+
+
+	public Bitmap getBitmapReloaded(String rsrc, int width, int height){
+		String path = Tools.getNoteSkinsDir() + rsrc;
+		Bitmap loaded = BitmapFactory.decodeFile(path);
+		return Bitmap.createScaledBitmap(loaded, width, height, true);
+	}
+
 	public static String rsrc(int _pitch, int _measurefraction, boolean _clicked) {
 		switch (_measurefraction) {
 		case 4:

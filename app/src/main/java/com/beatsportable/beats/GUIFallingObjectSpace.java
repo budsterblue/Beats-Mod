@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import java.util.Iterator;
 
 public class GUIFallingObjectSpace implements Iterable<GUIFallingObject> {
+
 	/* A place to put timed falling objects into columns.*/
 	
 	private ToolsArrayQueue<GUIFallingObject>[] available = emptyObjArray();
