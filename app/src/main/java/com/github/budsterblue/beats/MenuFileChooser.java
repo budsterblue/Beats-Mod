@@ -1,19 +1,26 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
 
-import java.io.*;
-import java.util.*;
-
-import android.app.*;
-import android.content.*;
+import android.app.ListActivity;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.Html;
-import android.view.*;
+import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.*;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Objects;
+import java.util.Scanner;
 
 public class MenuFileChooser extends ListActivity {
 	private MenuFileArrayAdapter adapter;
@@ -49,38 +56,29 @@ public class MenuFileChooser extends ListActivity {
 	
 	private void ls(File dir) {
 		if (dir == null) return;
-		if (!Tools.isMediaMounted()) {
-			Tools.toast(
-					Tools.getString(R.string.MenuFilechooser_list_error) +
-					dir.getPath() +
-					Tools.getString(R.string.Tools_usb_error)
-					);
-			return;
+
+		// remove /data/user/0/com.github.budsterblue.beats/files from title
+		if (dir.getAbsolutePath().equals(Tools.getBeatsDir())){
+			setTitle("/");
+		} else {
+			setTitle(dir.getAbsolutePath().replace(Tools.getBeatsDir(), ""));
 		}
-		if (!dir.canRead()) {
-			Tools.toast(
-					Tools.getString(R.string.MenuFilechooser_list_error) +
-					dir.getPath() +
-					Tools.getString(R.string.Tools_permissions_error)
-					);
-			return;
-		}
-		
-		setTitle(dir.getAbsolutePath());
 		// Get lists
 		File[] l = dir.listFiles();
-		ArrayList<MenuFileItem> dl = new ArrayList<MenuFileItem>();
-		ArrayList<MenuFileItem> fl = new ArrayList<MenuFileItem>(); 
+		ArrayList<MenuFileItem> dl = new ArrayList<>();
+		ArrayList<MenuFileItem> fl = new ArrayList<>();
 		
 		// Populate list
-		for (File f : l) {
-			String s = f.getName();
-			if (!s.startsWith(".")) {
-				if (f.isDirectory()) {
-					if (useShortDirNames) s = shortDirName(s);
-					dl.add(new MenuFileItem(s + "/", f.getAbsolutePath(), true, f));
-				} else if (Tools.isStepfile(s) || Tools.isLink(s) || Tools.isStepfilePack(s) || Tools.isText(s)) {
-					fl.add(new MenuFileItem(s, f.getAbsolutePath(), false, f));
+		if (l != null){
+			for (File f : l) {
+				String s = f.getName();
+				if (!s.startsWith(".")) {
+					if (f.isDirectory()) {
+						if (useShortDirNames) s = shortDirName(s);
+						dl.add(new MenuFileItem(s, f.getAbsolutePath(), true, f));
+					} else if (Tools.isStepfile(s) || Tools.isLink(s) || Tools.isStepfilePack(s) || Tools.isText(s)) {
+						fl.add(new MenuFileItem(s, f.getAbsolutePath(), false, f));
+					}
 				}
 			}
 		}
@@ -89,12 +87,12 @@ public class MenuFileChooser extends ListActivity {
 		dl.addAll(fl); // Add file list to end of directories list
 		
 		// Add "Parent directory" item
-		if(!dir.getName().equalsIgnoreCase("") && !dir.getName().equalsIgnoreCase("sdcard")) {
+		/*if(!dir.getName().equalsIgnoreCase("") && !dir.getAbsolutePath().equals(Tools.getBeatsDir())) {
 			MenuFileItem up_dir;
 			up_dir = 
 				new MenuFileItem(Tools.getString(R.string.MenuFilechooser_up_dir), dir.getParent(), true, null);
 			dl.add(0, up_dir);
-		}
+		}*/
 		
 		// Display
 		adapter = new MenuFileArrayAdapter(this, R.layout.choose, dl);
@@ -106,13 +104,15 @@ public class MenuFileChooser extends ListActivity {
 	}
 	
 	// Setup
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.registerForContextMenu(this.getListView());
+		Objects.requireNonNull(getActionBar()).setDisplayHomeAsUpEnabled(true);
+		this.getListView().setBackgroundColor(0xFFFFFFFF);
 		Tools.setContext(this);
 		
 		adapter = null;
-		cwd = null;
 		selectedFilePath = null;
 		
 		// Get last dir	
@@ -122,9 +122,8 @@ public class MenuFileChooser extends ListActivity {
 		if (prefLastDir.equals("")) {
 			prefLastDir = Tools.getSongsDir();
 		}
-		if (prefLastDir != null &&
-			prefLastDir.length() > 0 &&
-			(cwd = new File(prefLastDir)) != null &&
+		cwd = new File(prefLastDir);
+		if (prefLastDir.length() > 0 &&
 			cwd.exists() &&
 			cwd.getParentFile() != null &&
 			!cwd.getPath().equals(Tools.getSongsDir())
@@ -134,10 +133,6 @@ public class MenuFileChooser extends ListActivity {
 			String[] browseLocationOrder = {
 					prefLastDir,
 					Tools.getSongsDir(),
-					Tools.getBeatsDir(),
-					Environment.getExternalStorageDirectory().getPath(),
-					"/sdcard",
-					"/" //dangerous
 			};
 			for (String path: browseLocationOrder) {
 				if (path != null) {
@@ -150,6 +145,15 @@ public class MenuFileChooser extends ListActivity {
 		}
 		ToolsTracker.data("Opened file browser", "cwd", cwd.getAbsolutePath());
 		refresh();
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getItemId() == android.R.id.home) {
+			onFileClick(new MenuFileItem("", cwd.getParent(), true, null));
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 	
 	private String parseURL(File url) {
@@ -171,9 +175,9 @@ public class MenuFileChooser extends ListActivity {
 		return null;
 	}
 	
-	private void selectStepfile(String path) {
+	private void selectStepfile(String smFilePath) {
 		// Save preferences
-		String smFilePath = path;
+		// smFilePath = path
 		Tools.putSetting(R.string.smFilePath, smFilePath);
 		Tools.putSetting(R.string.lastDir, cwd.getPath());
 
@@ -224,7 +228,7 @@ public class MenuFileChooser extends ListActivity {
 					Tools.cancel_action,
 					-1
 					);
-			
+
 		}
 	}
 	
@@ -232,8 +236,8 @@ public class MenuFileChooser extends ListActivity {
 		selectedFilePath = i.getPath();
 		// Directory
 		if (i.isDirectory()) {
-			File f = new File(i.getPath());
-			if (f.canRead()) {
+			File f = new File(selectedFilePath);
+			if (f.canRead() && !f.getAbsolutePath().equals(Tools.getBeatsDir().replace("/files", ""))) { // this is a hack, but it works
 				cwd = f;
 				String path;
 				if (Tools.getBooleanSetting(R.string.stepfileFolderCheck, R.string.stepfileFolderCheckDefault)) {
@@ -287,28 +291,23 @@ public class MenuFileChooser extends ListActivity {
 	// File deletion
 	private void deleteFile(File f) throws SecurityException {
 		if (f.isDirectory()) {
-			for (File nf : f.listFiles()) {
+			for (File nf : Objects.requireNonNull(f.listFiles())) {
 				deleteFile(nf);
 			}
-			if (!f.delete()) {
-				throw new SecurityException(f.getPath());
-			}
-		} else {
-			if(!f.delete()) {
-				throw new SecurityException(f.getPath());
-			}
+		}
+		if (!f.delete()) {
+			throw new SecurityException(f.getPath());
 		}
 	}
 	
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo)menuInfo;
 		MenuFileItem i = adapter.getItem(info.position);
-		if (i.getFile() == null) {
-			return; // ignore the "..[up one directory]"
-		} else { 
+		// ignore the "..[up one directory]"
+		if (i != null && i.getFile() != null) {
 			menu.setHeaderIcon(R.drawable.icon_small);
 			menu.setHeaderTitle(Tools.getString(R.string.MenuFilechooser_file_options));
-			menu.add(0, v.getId(), 0, " " + Tools.getString(R.string.MenuFilechooser_file_open));  
+			menu.add(0, v.getId(), 0, " " + Tools.getString(R.string.MenuFilechooser_file_open));
 			menu.add(0, v.getId(), 1, " " + Tools.getString(R.string.MenuFilechooser_file_delete));
 		}
 	}
@@ -316,32 +315,31 @@ public class MenuFileChooser extends ListActivity {
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo)item.getMenuInfo();
 		MenuFileItem i = adapter.getItem(info.position);
+		assert i != null;
 		if (item.getOrder() == 0) { // Open
 			onFileClick(i);
 		} else { //item.getOrder() == 1 // Delete 
 			selectedFilePath = i.getPath();
 			
-			DialogInterface.OnClickListener delete_action = new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					try {
-						deleteFile(new File(selectedFilePath));
-					} catch (Exception e) {
-						ToolsTracker.error("MenuFileChooser.deleteFile", e, selectedFilePath);
-						Tools.error(
-								Tools.getString(R.string.MenuFilechooser_file_delete_error) +
-								selectedFilePath +
-								Tools.getString(R.string.Tools_error_msg) +
-								e.getMessage(),
-								Tools.cancel_action);
-					}
-					refresh();
-					dialog.cancel();
+			DialogInterface.OnClickListener delete_action = (dialog, id) -> {
+				try {
+					deleteFile(new File(selectedFilePath));
+				} catch (Exception e) {
+					ToolsTracker.error("MenuFileChooser.deleteFile", e, selectedFilePath);
+					Tools.error(
+							Tools.getString(R.string.MenuFilechooser_file_delete_error) +
+							selectedFilePath +
+							Tools.getString(R.string.Tools_error_msg) +
+							e.getMessage(),
+							Tools.cancel_action);
 				}
+				refresh();
+				dialog.cancel();
 			};
 			
 			Tools.alert(
 					Tools.getString(R.string.MenuFilechooser_file_delete),
-					R.drawable.icon_del,
+					R.drawable.ic_delete_forever_filled_black,
 					Tools.getString(R.string.MenuFilechooser_file_delete_confirm) +
 					i.getName(),
 					Tools.getString(R.string.Button_yes),
@@ -353,13 +351,17 @@ public class MenuFileChooser extends ListActivity {
 		}
 		return true;
 	}
-	
+
+	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
 		MenuFileItem i = adapter.getItem(position);
-		onFileClick(i);
+		if (i != null) {
+			onFileClick(i);
+		}
 	}
-	
+
+	@Override
 	public void onWindowFocusChanged (boolean hasFocus) {
 		if (hasFocus) {
 			Tools.setContext(this);
