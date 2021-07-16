@@ -1,4 +1,6 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
+
+import android.os.Build;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -7,9 +9,9 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 
-import com.beatsportable.beats.DataNote.NoteType;
-import com.beatsportable.beats.DataNotesData.Difficulty;
-import com.beatsportable.beats.DataNotesData.NotesType;
+import com.github.budsterblue.beats.DataNote.NoteType;
+import com.github.budsterblue.beats.DataNotesData.Difficulty;
+import com.github.budsterblue.beats.DataNotesData.NotesType;
 
 /*
  * See http://dwi.ddruk.com/readme.php#4
@@ -138,8 +140,7 @@ public class DataParserDWI {
 		vsc.close();
 	}	
 	
-	private static int parseFraction(int lineIndex, int lineCount) throws DataParserException {
-		int fraction = lineIndex * 192 / lineCount;
+	private static int parseFraction(int fraction) throws DataParserException {
 		if (fraction % (192/4) == 0) {
 			return 4;
 		} else if (fraction % (192/8) == 0) {
@@ -161,55 +162,33 @@ public class DataParserDWI {
 		} else {
 			throw new DataParserException (
 					"Unable to determine fraction type with lineIndex " +
-					lineIndex +
+					fraction +
 					" and lineCount " +
-					lineCount
+							192
 					);
 		}
 	}
-	
-	// Confusing hold logic but pretty much its to ensure that holds end when jump is on
-	private static LinkedList<Integer> activeHolds;
-	private static int osu_num, osu_fraction;
+
 	private static Randomizer rand;
 	
 	// TODO
-	private static void addNotes(DataNotesData nd, Queue<DataNote> notes, NoteType nt,
-			boolean jumps, boolean osu, boolean randomize,
-			int beatFractionTotal, float beat, float time, float offset, int pitchA)
+	private static void addNotes(Queue<DataNote> notes, NoteType nt,
+								 boolean jumps, boolean randomize,
+								 int beatFractionTotal, float beat, float time, float offset, int pitchA)
 	throws DataParserException {
 		int pitch;
 		int fraction;
 		int noteTime = (int)(time - offset);
-		float[] coords;
-		if (osu) {
-			coords = rand.nextCoords(beatFractionTotal, 192);
-			pitch = osu_num;
-			fraction = osu_fraction;
-		} else {
-			coords = new float[4];
-			pitch = pitchA;
-			fraction = parseFraction(beatFractionTotal, 192);
-			if (randomize) {
-				pitch = rand.nextPitch(jumps);
-			}
+		pitch = pitchA;
+		fraction = parseFraction(beatFractionTotal);
+		if (randomize) {
+			pitch = rand.nextPitch(jumps);
 		}
-		DataNote n = new DataNote(
-				nt,
-				fraction,
-				pitch,
-				noteTime,
-				beat,
-				coords,
-				osu_num
-				);
-		notes.add(n);
-		//osu_num++; // Do this during the note adding phase
+		notes.add(new DataNote(nt, fraction, pitch, noteTime, beat));
 	}
-	
-	private static final int OSU_FRACTION_MAX = 4;
+
 	public static void parseNotesData(DataFile df, DataNotesData nd,
-			boolean jumps, boolean holds, boolean osu, boolean randomize)
+			boolean jumps, boolean holds, boolean randomize)
 	throws DataParserException {
 		/*
 		 * Step-patterns are defined in the same way as .MSD files - use the numeric keypad as a reference for most patterns:
@@ -240,14 +219,12 @@ public class DataParserDWI {
 
 		Queue<Float> stopsBeat = df.getStopsBeat();
 		Queue<Float> stopsValue = df.getStopsValue();
-		activeHolds = new LinkedList<Integer>();
+		// Confusing hold logic but pretty much its to ensure that holds end when jump is on
+		LinkedList<Integer> activeHolds = new LinkedList<>();
 		rand = new Randomizer(df.md5hash.hashCode());
 		try {
 			int i = 0;
-			osu_num = 1;
-			osu_fraction = 1;			
-			rand.setupNextMeasure();
-			Queue<DataNote> notes = new LinkedList<DataNote>();
+			Queue<DataNote> notes = new LinkedList<>();
 			while (i < ndd.length()) {
 				char c = ndd.charAt(i);
 				if (c == '!') { // Hold
@@ -305,19 +282,11 @@ public class DataParserDWI {
 					while (!notes.isEmpty()) {
 						DataNote n = notes.remove();
 						// Holds
-						if (!holds || randomize || osu) {
+						if (!holds || randomize) {
 							if (n.noteType.equals(NoteType.HOLD_START)) {
 								n.noteType = NoteType.TAP_NOTE;
-								if (osu) {
-									n.num = osu_num;
-									osu_num++;
-								}
 								nd.addNote(n);
 							} else if (!n.noteType.equals(NoteType.HOLD_END)) { // Don't add hold ends
-								if (osu) {
-									n.num = osu_num;
-									osu_num++;
-								}
 								nd.addNote(n);
 							}
 						} else { 
@@ -326,10 +295,6 @@ public class DataParserDWI {
 					}
 					// Measure
 					if (beatFractionTotal >= 192) { // Measure obtained!
-						osu_num = 1;
-						osu_fraction++;
-						if (osu_fraction > OSU_FRACTION_MAX) osu_fraction = 1;
-						rand.setupNextMeasure();
 						beatFractionTotal -= 192;
 					}
 					int pitchA = -1, pitchB = -1;
@@ -391,7 +356,7 @@ public class DataParserDWI {
 								}
 							}
 							if (jumps || activeHolds.isEmpty() || ntA.equals(NoteType.HOLD_END)) {
-								addNotes(nd, notes, ntA, jumps, osu, randomize,
+								addNotes(notes, ntA, jumps, randomize,
 										beatFractionTotal, beat, time, offset, pitchA);
 							}
 						}
@@ -404,14 +369,20 @@ public class DataParserDWI {
 									it.remove();
 								}
 							}
-							if ((jumps || ntB.equals(NoteType.HOLD_END)) && !osu) {
-								addNotes(nd, notes, ntB, jumps, osu, randomize,
+							if ((jumps || ntB.equals(NoteType.HOLD_END))) {
+								addNotes(notes, ntB, jumps, randomize,
 										beatFractionTotal, beat, time, offset, pitchB);
 							}
 						}
 						
 						//time += 60f * 1000f * ((float)beatFraction / 192f) / df.getBPM(beat);
-						time += (60f * 1000f * (float)beatFraction) / ((192f / 4f) * df.getBPM(beat));
+
+						if (Build.VERSION.SDK_INT >= 23) {
+							time += (60f * 1000f * (float)beatFraction) / ((192f / 4f) * df.getBPM(beat) * Float.parseFloat(Tools.getSetting(R.string.bpmMultiplier, R.string.bpmMultiplierDefault)));
+						} else {
+							time += (60f * 1000f * (float)beatFraction) / ((192f / 4f) * df.getBPM(beat));
+						}
+
 						if (!stopsBeat.isEmpty() && beat >= stopsBeat.peek()) {
 							stopsBeat.poll();
 							time += stopsValue.poll() * 1000;

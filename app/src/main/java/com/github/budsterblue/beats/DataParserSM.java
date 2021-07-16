@@ -1,13 +1,15 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
+import android.os.Build;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 
-import com.beatsportable.beats.DataNote.NoteType;
-import com.beatsportable.beats.DataNotesData.Difficulty;
-import com.beatsportable.beats.DataNotesData.NotesType;
+import com.github.budsterblue.beats.DataNote.NoteType;
+import com.github.budsterblue.beats.DataNotesData.Difficulty;
+import com.github.budsterblue.beats.DataNotesData.NotesType;
 
 /*
  * See http://www.stepmania.com/wiki/The_.SM_file_format
@@ -192,12 +194,11 @@ public class DataParserSM {
 	
 	// Confusing hold logic but pretty much its to ensure that holds end when jump is on
 	private static LinkedList<Integer> activeHolds;
-	private static int osu_num, osu_fraction;
 	private static Randomizer rand;
 	
 	private static void addNotes(
 			DataNotesData nd, String line,
-			boolean holds, boolean jumps, boolean osu, boolean randomize,
+			boolean holds, boolean jumps, boolean randomize,
 			int lineIndex, int lineCount, float beat, float time, float timeIncrease, float offset)
 	throws DataParserException {
 		boolean noteAdded = false;
@@ -208,7 +209,6 @@ public class DataParserSM {
 				// Series of checks whether or not the note should be added, confusinggg~
 				boolean addNote = false;
 				if (jumps) addNote = true;
-				if (osu) addNote = false;
 				if (!noteAdded) addNote = true;
 				if (!jumps && !activeHolds.isEmpty()) addNote = false;
 				if (nt.equals(NoteType.HOLD_END) && activeHolds.contains(i)) addNote = true;
@@ -216,29 +216,23 @@ public class DataParserSM {
 					int pitch;
 					int fraction;
 					int noteTime = (int)(time + timeIncrease - offset);
-					float[] coords;
-					// holds pitch logic put in else since osu! Mod doesn't use pitches
-						coords = new float[4];
-						pitch = i;
-						fraction = parseFraction(lineIndex, lineCount);
-						if (nt.equals(NoteType.HOLD_START)) {
-							activeHolds.add(i);
-						} else if (nt.equals(NoteType.HOLD_END) && activeHolds.contains(i)) {
-							activeHolds.remove((Integer) i);
-						} else if (randomize) {
-							pitch = rand.nextPitch(jumps);
-						}
+					pitch = i;
+					fraction = parseFraction(lineIndex, lineCount);
+					if (nt.equals(NoteType.HOLD_START)) {
+						activeHolds.add(i);
+					} else if (nt.equals(NoteType.HOLD_END) && activeHolds.contains(i)) {
+						activeHolds.remove((Integer) i);
+					} else if (randomize) {
+						pitch = rand.nextPitch(jumps);
+					}
 					DataNote n = new DataNote(
 							nt,
 							fraction,
 							pitch,
 							noteTime,
-							beat,
-							coords,
-							osu_num
+							beat
 							);
 					nd.addNote(n);
-					osu_num++;
 					noteAdded = true;
 				}
 			}
@@ -256,7 +250,7 @@ public class DataParserSM {
 	 * Measures are separated by a comma. 
 	 */
 	public static void parseNotesData(DataFile df, DataNotesData nd,
-			boolean jumps, boolean holds, boolean osu, boolean randomize)
+			boolean jumps, boolean holds, boolean randomize)
 	throws DataParserException {
 		Scanner nsc = new Scanner(nd.getNotesData());
 		nsc.useDelimiter(",");
@@ -268,17 +262,12 @@ public class DataParserSM {
 
 		Queue<Float> stopsBeat = df.getStopsBeat();
 		Queue<Float> stopsValue = df.getStopsValue();
-		activeHolds = new LinkedList<Integer>();
+		activeHolds = new LinkedList<>();
 		rand = new Randomizer(df.md5hash.hashCode());
 		try {
 			// Measure
-			osu_fraction = 0; // ++ -> 1
 			while (nsc.hasNext()) {
 				measure = nsc.next().trim();
-				osu_num = 1;
-				osu_fraction++;
-				if (osu_fraction > GUINoteImage.OSU_FRACTION_MAX) osu_fraction = 1;
-				rand.setupNextMeasure();
 				
 				// Get measure count
 				Scanner msc = new Scanner(measure);
@@ -315,14 +304,19 @@ public class DataParserSM {
 					rand.setupNextLine();
 					addNotes(
 							nd,
-							line, holds, jumps, osu, randomize,
+							line, holds, jumps, randomize,
 							lineIndex, lineCount,
 							beat, time, timeIncrease, offset
 							);
 					
 					// TIME_PER_MEASURE = 60s * 1000ms/s * 4 beats/measure
-					timeIncrease += (60f * 1000f * 4f) / ((float)lineCount * df.getBPM(beat));
+					//timeIncrease += (60f * 1000f * 4f) / ((float)lineCount * df.getBPM(beat));
 
+					if (Build.VERSION.SDK_INT >= 23) {
+						timeIncrease += (60f * 1000f * 4f) / ((float) lineCount * df.getBPM(beat) * Float.parseFloat(Tools.getSetting(R.string.bpmMultiplier, R.string.bpmMultiplierDefault)));
+					} else {
+						timeIncrease += (60f * 1000f * 4f) / ((float) lineCount * df.getBPM(beat));
+					}
 					if (!stopsBeat.isEmpty() && beat >= stopsBeat.peek()) {
 						stopsBeat.poll();
 						timeIncrease += stopsValue.poll() * 1000;
@@ -412,7 +406,7 @@ public class DataParserSM {
 			int radarValueCount = 0;
 			while (rsc.hasNext()) {
 				try {
-					nd.addRadarValue(Float.valueOf(rsc.next().trim()));
+					nd.addRadarValue(Float.parseFloat(rsc.next().trim()));
 					radarValueCount++;
 				} catch (Exception e) {
 					rsc.close();

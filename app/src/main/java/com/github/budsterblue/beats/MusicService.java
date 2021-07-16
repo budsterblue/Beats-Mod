@@ -1,11 +1,12 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
 
 import android.media.MediaPlayer;
+import android.os.Build;
 
 public class MusicService {
 	
 	private MediaPlayer p;
-	private String musicFilePath;
+	private final String musicFilePath;
 	
 	private int pauseTime;
 	private boolean isStarted;
@@ -22,6 +23,9 @@ public class MusicService {
 				p = new MediaPlayer();
 			p.setDataSource(musicFilePath);
 			p.setLooping(false);
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+				p.setPlaybackParams(p.getPlaybackParams().setSpeed(Float.parseFloat(Tools.getSetting(R.string.bpmMultiplier, R.string.bpmMultiplierDefault))));
+			}
 			p.prepare();
 		} catch (Exception e) {
 			ToolsTracker.error("MusicService.setupMusicPlayer", e, musicFilePath);

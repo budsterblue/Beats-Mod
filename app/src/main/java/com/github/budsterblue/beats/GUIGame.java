@@ -1,4 +1,4 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
 
 import java.io.File;
 import java.util.HashMap;
@@ -9,8 +9,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.*;
+import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.Region.Op;
 import android.media.AudioManager;
 import android.os.*;
@@ -39,7 +45,6 @@ public class GUIGame extends Activity {
 	private double speed_multiplier;
 	private int noteAppearance;
 	private int randomize;
-	private boolean osu;
 	private boolean dark;
 	private boolean jumps;
 	private boolean holds;
@@ -54,9 +59,9 @@ public class GUIGame extends Activity {
 	
 	private static final int ROTATABLE = 2;
 	
-	private GUIDrawingArea drawarea = new GUIDrawingArea() {
+	private final GUIDrawingArea drawarea = new GUIDrawingArea() {
 		
-		private SparseArray<Bitmap> rsrcBitmaps = new SparseArray<Bitmap>();
+		private final SparseArray<Bitmap> rsrcBitmaps = new SparseArray<>();
 		@Override
 		public Bitmap getBitmap(String rsrc, int width, int height) {
 			Bitmap b = rsrcBitmaps.get(rsrc.hashCode());
@@ -70,7 +75,7 @@ public class GUIGame extends Activity {
 				}
 				if (loaded == null) {
 					ToolsTracker.info("Unable to load graphics: " + path);
-					loaded = BitmapFactory.decodeResource(getResources(), R.drawable.missing_graphics);
+					loaded = BitmapFactory.decodeResource(getResources(), R.drawable.ic_broken_image_filled_black);
 				}
 				b = Bitmap.createScaledBitmap(
 						loaded,
@@ -93,12 +98,10 @@ public class GUIGame extends Activity {
 		@Override
 		public int pitchToX(int pitch) { return h.pitchToX(pitch); }
 		@Override
-		public int timeToY(float time) { return h.timeToY(time); }	
+		public int timeToY(float time) { return h.timeToY(time); }
 		
 		@Override
 		public void setClip_screen(Canvas canvas) {
-			//canvas.clipRect(0, 0, canvas.getWidth(), canvas.getHeight(), Op.REPLACE);
-			canvas.clipRect(0, 0, Tools.screen_w, Tools.screen_h, Op.REPLACE);
 		}
 		@Override
 		public void setClip_arrowSpace(Canvas canvas) {
@@ -109,7 +112,6 @@ public class GUIGame extends Activity {
 			switch (Tools.gameMode) {
 				case Tools.STANDARD: fallingDown = false;    break;
 				case Tools.REVERSE:  fallingDown = true;     break;
-				case Tools.OSU_MOD:  setClip_screen(canvas); return;
 			}
 			int ymin, ymax, midpt;
 			switch (noteAppearance) {
@@ -132,7 +134,7 @@ public class GUIGame extends Activity {
 				ymax = Tools.screen_h;
 				break;
 			}
-			canvas.clipRect(0, ymin, Tools.screen_w, ymax, Op.REPLACE);
+			canvas.clipRect(0, ymin, Tools.screen_w, ymax, Op.INTERSECT);
 		}
 	};
 	
@@ -148,7 +150,7 @@ public class GUIGame extends Activity {
 				*/
 		boolean additionalVibrations =
 				Tools.getBooleanSetting(R.string.additionalVibrations, R.string.additionalVibrationsDefault);
-		orientation = Integer.valueOf(
+		orientation = Integer.parseInt(
 				Tools.getSetting(R.string.orientation, R.string.orientationDefault));
 		backgroundShow =
 				Tools.getBooleanSetting(R.string.backgroundShow, R.string.backgroundShowDefault);
@@ -156,18 +158,17 @@ public class GUIGame extends Activity {
 			Tools.getBooleanSetting(R.string.backgroundSong, R.string.backgroundSongDefault);
 		backgroundFiltering =
 				Tools.getBooleanSetting(R.string.backgroundFiltering, R.string.backgroundFilteringDefault);
-		backgroundBrightness = Integer.valueOf(
+		backgroundBrightness = Integer.parseInt(
 				Tools.getSetting(R.string.backgroundBrightness, R.string.backgroundBrightnessDefault));
 		//frame_millis = Integer.valueOf(
 		//		Tools.getSetting(R.string.fps, R.string.fpsDefault));
 		frame_millis = 17; // 60 FPS = 1000/17
-		speed_multiplier = Double.valueOf(
+		speed_multiplier = Double.parseDouble(
 				Tools.getSetting(R.string.speedMultiplier, R.string.speedMultiplierDefault));
-		noteAppearance = Integer.valueOf(
+		noteAppearance = Integer.parseInt(
 				Tools.getSetting(R.string.noteAppearance, R.string.noteAppearanceDefault));
 		randomize = Integer.parseInt(
 				Tools.getSetting(R.string.randomize, R.string.randomizeDefault));
-		osu = (Tools.gameMode == Tools.OSU_MOD);
 		dark = Tools.getBooleanSetting(R.string.dark, R.string.darkDefault);
 		jumps = Tools.getBooleanSetting(R.string.jumps, R.string.jumpsDefault);
 		holds = Tools.getBooleanSetting(R.string.holds, R.string.holdsDefault);
@@ -176,11 +177,11 @@ public class GUIGame extends Activity {
 		screenshotMode = Tools.getBooleanSetting(R.string.screenshotMode, R.string.screenshotModeDefault);
 		fullscreen = Tools.getBooleanSetting(R.string.fullscreen, R.string.fullscreenDefault);
 		debugTime = Tools.getBooleanSetting(R.string.debugTime, R.string.debugTimeDefault);
-		syncDuration = Integer.valueOf(
+		syncDuration = Integer.parseInt(
 				Tools.getSetting(R.string.syncDuration, R.string.syncDurationDefault));
-		manualOffset = Integer.valueOf(
+		manualOffset = Integer.parseInt(
 				Tools.getSetting(R.string.manualOffset, R.string.manualOffsetDefault));
-		manualOGGOffset = Integer.valueOf(
+		manualOGGOffset = Integer.parseInt(
 				Tools.getSetting(R.string.manualOGGOffset, R.string.manualOGGOffsetDefault));
 		
 		// Make the game have higher priority to reduce lag
@@ -191,39 +192,23 @@ public class GUIGame extends Activity {
 		
 		// Fullscreen?
 		if (fullscreen) {
-			//requestWindowFeature(Window.FEATURE_NO_TITLE); 
-			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); 
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+				getWindow().setDecorFitsSystemWindows(false);
+			} else {
+				getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+			}
 		}
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		Tools.setScreenDimensions();
 		
 		// Setup view
-		int hardwareAccelerate = Integer.valueOf(
+		int hardwareAccelerate = Integer.parseInt(
 				Tools.getSetting(R.string.hardwareAccelerate, R.string.hardwareAccelerateDefault));
-		if (hardwareAccelerate < 0) {
-			// Test for hardware acceleration
-			View testView = new View(this);
-			Canvas testCanvas = new Canvas();
-			setContentView(testView);
-			// Hardware acceleration support was added in Honeycomb (11)
-			if (testView.isHardwareAccelerated() && testCanvas.isHardwareAccelerated()) {
-				try {
-					// Check if clipPath is supported
-					testCanvas.clipPath(null, null);
-					
-					// Looks like it's supported, enable hardware acceleration
-					hardwareAccelerate = 1;
-				} catch (UnsupportedOperationException e) {
-					hardwareAccelerate = 0;
-				}
-			} else {
-				hardwareAccelerate = 0;
-			}
-		}
 		if (hardwareAccelerate == 1) {
 			mView = new RefreshHandlerView(this);
 		} else {
 			// SurfaceView is not hardware accelerated but faster than normal Views
+			// Is this still true?
 			mView = new SurfaceHolderView(this);
 		}
 		setContentView(mView.getView());
@@ -288,15 +273,17 @@ public class GUIGame extends Activity {
 
 	private class SurfaceHolderThread extends Thread {
 
-		private GameView _view;
+		private final GameView _view;
 		private boolean _run = false;
 		private boolean _paused = false;
-		private Canvas c;
-		private SurfaceHolder _surfaceHolder;
-	 
+		private final SurfaceHolder _surfaceHolder;
+		private final int _hardwareAccelerate;
+
 		public SurfaceHolderThread(SurfaceHolder surfaceHolder, GameView view) {
 			_surfaceHolder = surfaceHolder;
 			_view = view;
+			_hardwareAccelerate = Integer.parseInt(
+					Tools.getSetting(R.string.hardwareAccelerate, R.string.hardwareAccelerateDefault));
 		}
 		
 		public void setPaused(boolean paused) {
@@ -310,10 +297,14 @@ public class GUIGame extends Activity {
 		@Override
 		public void run() {
 			while (_run) {
-				c = null;
+				Canvas c = null;
 				try {
 					synchronized (_surfaceHolder) {
-						c = _surfaceHolder.lockCanvas(null);
+						if (_hardwareAccelerate == 1 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+							c = _surfaceHolder.lockHardwareCanvas();
+						} else {
+							c = _surfaceHolder.lockCanvas(null);
+						}
 						if (_view != null && c != null) {
 							if (!_paused) {
 								_view.update();
@@ -361,6 +352,7 @@ public class GUIGame extends Activity {
 		private GUITextPaint textPaint;
 		private GUITextPaint textComboPaint;
 		private Paint hpBackPaint, hpBarPaint, hpBorderPaint;
+		private Rect hpBackRect, hpBarRect, hpBorderRect;
 		private GUITextPaint leftSettingsPaint, rightSettingsPaint;
 		private String leftSettingsTop, leftSettingsBottom;
 		private String rightSettingsBottom, rightSettingsTop;
@@ -461,11 +453,14 @@ public class GUIGame extends Activity {
 			// Health
 			hpBackPaint = new Paint();
 			hpBackPaint.setARGB(60,0,0,255);
+			hpBackRect = new Rect(margin, margin * 2 + height, Tools.screen_w - margin, margin * 2 + height * 2);
 			hpBarPaint = new Paint();
+			hpBarRect = new Rect(margin, margin * 2 + height, Tools.screen_w - margin, margin * 2 + height * 2);
 			hpBorderPaint = new Paint();
 			hpBorderPaint.setStyle(Paint.Style.STROKE);
 			hpBorderPaint.setStrokeWidth(Tools.scale(2));
 			hpBorderPaint.setARGB(Tools.MAX_OPA, 0, 0, 0);
+			hpBorderRect = new Rect(margin, margin * 2 + height, Tools.screen_w - margin, margin * 2 + height * 2);
 			
 			// Left Settings (difficulty and credits)
 			leftSettingsPaint = new GUITextPaint(Tools.scale(13)).alignLeft().serif().
@@ -492,10 +487,10 @@ public class GUIGame extends Activity {
 				case 3: rightSettingsBottom += Tools.getString(R.string.GUIGame_invisible); break;
 				default: break;
 			}
-			if (jumps && !osu) rightSettingsBottom += Tools.getString(R.string.GUIGame_jumps);
+			if (jumps) rightSettingsBottom += Tools.getString(R.string.GUIGame_jumps);
 			switch (randomize) {
 				case Randomizer.OFF:
-					if (!holds && !osu)
+					if (!holds)
 						rightSettingsBottom += Tools.getString(R.string.GUIGame_no_holds);
 					break;
 				case Randomizer.STATIC:
@@ -505,7 +500,6 @@ public class GUIGame extends Activity {
 					rightSettingsBottom += Tools.getString(R.string.GUIGame_randomize_dynamic);
 					break;
 			}
-			if (osu) rightSettingsBottom += Tools.getString(R.string.GUIGame_osu_mod);
 			if (rightSettingsBottom.length() > 2) {
 				rightSettingsBottom = rightSettingsBottom.substring(2); // ignore the first ", "
 			} else {
@@ -516,7 +510,7 @@ public class GUIGame extends Activity {
 			rightSettingsTop =
 				String.format(
 						"%s BPM, %3.2fx",
-						dp.df.getBPMRange(dp.notesDataIndex),
+						dp.df.getBPMRange(),
 						speed_multiplier
 						);
 			
@@ -542,7 +536,7 @@ public class GUIGame extends Activity {
 			scoreDisplay = new GUIScoreDisplay(h.score);
 			
 			// Tracking
-			HashMap<String,String> attributes = new HashMap<String,String>();
+			HashMap<String,String> attributes = new HashMap<>();
 			attributes.put("leftSettingsTop", leftSettingsTop);
 			attributes.put("leftSettingsBottom", leftSettingsBottom);
 			attributes.put("rightSettingsTop", rightSettingsTop);
@@ -609,10 +603,11 @@ public class GUIGame extends Activity {
 				hpBarPaint.setARGB(Tools.MAX_OPA, 127,0,0);
 				health = 1; //for drawing purposes only
 			}
+			hpBarRect.right = (int)((Tools.screen_w - margin) * health);
 
-			canvas.drawRect(new Rect(margin, margin * 2 + height, Tools.screen_w - margin, margin * 2 + height * 2), hpBackPaint);
-			canvas.drawRect(new Rect(margin, margin * 2 + height, (int)((Tools.screen_w - margin) * health), margin * 2 + height * 2), hpBarPaint);
-			canvas.drawRect(new Rect(margin, margin * 2 + height, Tools.screen_w - margin, margin * 2 + height * 2), hpBorderPaint);
+			canvas.drawRect(hpBackRect, hpBackPaint);
+			canvas.drawRect(hpBarRect, hpBarPaint);
+			canvas.drawRect(hpBorderRect, hpBorderPaint);
 			
 			// Show FPS or AutoPlay
 			if (showFPS && autoPlay) {
@@ -625,17 +620,17 @@ public class GUIGame extends Activity {
 			
 			// Accuracy message
 			int opa = (2 * Tools.MAX_OPA - h.msg_frames * frame_millis);
-			opa = (opa < 0) ? 0 : (opa > Tools.MAX_OPA) ? Tools.MAX_OPA : opa;
+			opa = (opa < 0) ? 0 : Math.min(opa, Tools.MAX_OPA);
 			if (opa > 0) {
 				textPaint.ARGB(opa,h.msg_r,h.msg_g,h.msg_b);
 				textPaint.strokeARGB(opa,255,255,255);
 				textPaint.draw(canvas, h.msg,
-						Tools.screen_w/2, Tools.screen_h - Tools.screen_h/(float)3 - h.msg_frames * frame_millis / (float)10);
+						(float) (Tools.screen_w/2), Tools.screen_h - Tools.screen_h/(float)3 - h.msg_frames * frame_millis / (float)10);
 			}
 			
 			// Combo
 			int opac = (3 * Tools.MAX_OPA - h.combo_frames * frame_millis);
-			opac = (opac < 0) ? 0 : (opac > Tools.MAX_OPA) ? Tools.MAX_OPA : opac;
+			opac = (opac < 0) ? 0 : Math.min(opac, Tools.MAX_OPA);
 			if (opac > 0 && h.score.comboCount > GUIHandler.MIN_COMBO) {
 				if (h.score.comboCount < 100) {
 					textComboPaint.ARGB(opac, 255, 220, 0); // yellow
@@ -650,7 +645,7 @@ public class GUIGame extends Activity {
 					textComboPaint.ARGB(opac, 255, 64, 0); // almost red
 					textComboPaint.strokeARGB(opac, 192, 0, 0);
 				}
-				textComboPaint.draw(canvas, h.combo, Tools.screen_w/2, Tools.screen_h/2);
+				textComboPaint.draw(canvas, h.combo, (float) (Tools.screen_w/2), (float) Tools.screen_h/2);
 			}
 			
 			// Settings
@@ -715,15 +710,25 @@ public class GUIGame extends Activity {
 			// Game is running
 			} else {				
 				currentTime = (int)(SystemClock.elapsedRealtime() - mStartTime + musicStartTime);
-				int desiredFrameNo = (int)((currentTime + travelOffset)/frame_millis);
+				int desiredFrameNo = (currentTime + travelOffset)/frame_millis;
 				
 				// Sync during the first x ms
 				// Some re-syncing issue with OGGs due to seekTo, so syncAdjust slowly
+				//float syncDurationTemp = syncDuration;
+				//if (Build.VERSION.SDK_INT >= 23) {
+				//	syncDurationTemp = syncDuration * Float.parseFloat(Tools.getSetting(R.string.bpmMultiplier, R.string.bpmMultiplierDefault));
+				//}
 				if (syncCounter * frame_millis < syncDuration) {
 					if (mp.isPlaying()) {
 						if (syncCounter % 2 == 0) {
 							musicCurrentPosition = mp.getCurrentPosition();
-							syncAdjust = (currentTime - (musicCurrentPosition + manualOffset)) / 8;
+
+							if (Build.VERSION.SDK_INT >= 23) {
+								syncAdjust = ((int) ((((float) currentTime) * Float.parseFloat(Tools.getSetting(R.string.bpmMultiplier, R.string.bpmMultiplierDefault))) - ((float) (musicCurrentPosition + manualOffset)))) / 8;
+							} else {
+								syncAdjust = (currentTime - (musicCurrentPosition + manualOffset)) / 8;
+							}
+
 							mStartTime += syncAdjust;
 							if (debugTime) {
 								h.setMessage(
@@ -756,8 +761,8 @@ public class GUIGame extends Activity {
 	}
 	
 	private class RefreshHandlerView extends View implements GameViewHandler {
-		private GameView mView;
-		private RefreshHandler mRedrawHandler;
+		private final GameView mView;
+		private final RefreshHandler mRedrawHandler;
 		
 		public RefreshHandlerView(Context context) {
 			super(context);
@@ -819,7 +824,7 @@ public class GUIGame extends Activity {
 	
 	private class SurfaceHolderView extends SurfaceView implements SurfaceHolder.Callback, GameViewHandler {
 		public SurfaceHolderThread _thread;
-		private GameView mView;
+		private final GameView mView;
 		
 		public SurfaceHolderView(Context context) {
 			super(context);
@@ -935,13 +940,13 @@ public class GUIGame extends Activity {
 
 	private void exitGame() {
 		stopGame(Tools.getString(R.string.GUIGame_exiting), 0, 64, 255, false, true); // royal blue
-		int hardwareAccelerate = Integer.valueOf(
-				Tools.getSetting(R.string.hardwareAccelerate, R.string.hardwareAccelerateDefault));
-		if (hardwareAccelerate == 0) {
-			triggerRebirth(this);
-			//throw new RuntimeException("This is such a stupid way of fixing a game freeze but oh well");
-
-		}
+		//int hardwareAccelerate = Integer.parseInt(
+		//		Tools.getSetting(R.string.hardwareAccelerate, R.string.hardwareAccelerateDefault));
+		//if (hardwareAccelerate == 1) {
+		mp.onDestroy();
+		h.releaseVibrator();
+		triggerRebirth(this);
+		//}
 	}
 	private void resumeGame() {
 		resumeGame(true);
@@ -996,7 +1001,7 @@ public class GUIGame extends Activity {
 	@Override
 	protected void onDestroy() {
 		Log.d("GUIGame", "GUIGame destroyed.");
-		clearBitmaps();
+		clearBitmaps(); // I removed this in the old code
 		exitGame();
 		mp.onDestroy();
 		h.releaseVibrator();
