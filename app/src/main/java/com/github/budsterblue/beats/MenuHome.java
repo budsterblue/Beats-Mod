@@ -1,211 +1,54 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
 
-import java.util.*;
-
-import android.Manifest;
-import android.app.*;
-import android.content.*;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.media.AudioManager;
-import android.os.*;
-import android.support.v4.app.ActivityCompat;
-import android.view.*;
-import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
-import android.view.View.OnTouchListener;
-import android.widget.*;
+import android.os.Bundle;
+import android.os.Vibrator;
+import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.Window;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-	
+import java.util.Locale;
+
+
 public class MenuHome extends Activity {
 	
 	private static final int SELECT_MUSIC = 123;
-	private static final String MENU_FONT = "fonts/HappyKiller.ttf";
-	
+	private static final int SELECT_SONG_PACK = 122;
+	private static final String MENU_FONT = "fonts/Square.ttf";
+
 	// Private variables
-	//private AlertDialog alertDialog = null;
-	private String title = "";
+	private final String title = "";
 	private String backgroundPath = "";
 	private boolean largeText = false;
-	private String[] largeTextCountries= {"ko", "zh", "ru", "ja", "tr"};
+	private final String[] largeTextCountries= {"ko", "zh", "ru", "ja", "tr"};
 	private static Locale defaultLocale;
 	private Vibrator v;
 	
-	// Startup Warnings
-	private void versionCheck() {
-	}
-	
-	/*
-	private void showBackgroundData() {
-		// Background data warning
-		DialogInterface.OnClickListener sync_action = new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				Tools.disabledBackgroundData = true;
-				dialog.cancel();
-				try {
-					startActivity(new Intent(android.provider.Settings.ACTION_SYNC_SETTINGS));
-				} catch (ActivityNotFoundException e) {
-					ToolsTracker.error("MenuHome.showBackgroundData", e, "");
-					Tools.warning(
-							Tools.getString(R.string.MenuHome_background_sync_fail),
-							Tools.cancel_action, -1
-							);
-				}
-			}
-		};
-		DialogInterface.OnClickListener cancel_action = new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				dialog.cancel();
-			}
-		};
-		Tools.warning(
-				Tools.getString(R.string.MenuHome_background_sync_warning),
-				sync_action,
-				cancel_action,
-				R.string.ignoreSyncWarning
-				);
-	}
-	
-	// On Finish
-	private void backgroundDataUncheck() {
-		ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-		if (Tools.disabledBackgroundData && !cm.getBackgroundDataSetting()) {
-			// Background data warning
-			DialogInterface.OnClickListener sync_action = new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
-					try {
-						startActivity(new Intent(android.provider.Settings.ACTION_SYNC_SETTINGS));
-					} catch (ActivityNotFoundException e) {
-						Tools.warning(
-								Tools.getString(R.string.MenuHome_background_sync_fail),
-								Tools.cancel_action, -1
-								);
-					}
-					Tools.disabledBackgroundData = false;
-					finish();
-				}
-			};
-			DialogInterface.OnClickListener finish_action = new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
-					Tools.disabledBackgroundData = false;
-					finish();
-				}
-			};
-			
-			Tools.warning(
-					Tools.getString(R.string.MenuHome_background_sync_undo),
-					sync_action,
-					finish_action,
-					-1,
-					true
-				);
-		} else {
-			finish();
-		}
-	}
-	*/
-	
-	private void showNotes() {
-		
-		// New User notes
-		/*if (!Tools.getBooleanSetting(R.string.ignoreNewUserNotes, R.string.ignoreNewUserNotesDefault)) {
-			
-			DialogInterface.OnClickListener website_action = new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
-					Tools.startWebsiteActivity(Tools.getString(R.string.Url_demo));
-				}
-			};
-			
-			DialogInterface.OnClickListener close_action = new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
-				}
-			};
-			
-			Tools.note(
-					Tools.getString(R.string.MenuHome_new_user_notes_title),
-					R.drawable.icon_small,
-					Tools.getString(R.string.MenuHome_new_user_notes),
-					Tools.getString(R.string.Button_demo),
-					website_action,
-					Tools.getString(R.string.Button_close),
-					close_action,
-					R.string.ignoreNewUserNotes
-					);
-		}*/
-		
-		// Beta notes
-		/*if (Tools.getBooleanSetting(R.string.App_version, R.string.betaNotesDefault) ||
-			!Tools.getBooleanSetting(R.string.ignoreBetaNotes, R.string.ignoreBetaNotesDefault)) {
-			// Beta warning
-			DialogInterface.OnClickListener forums_action = new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					Tools.putSetting(R.string.App_version, "0");					
-					dialog.cancel();
-					Tools.startWebsiteActivity(Tools.getString(R.string.Url_updates));
-				}
-			};
-			
-			DialogInterface.OnClickListener close_action = new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					Tools.putSetting(R.string.App_version, "0");					
-					dialog.cancel();
-				}
-			};
-			
-			
-			Tools.note(
-					Tools.getString(R.string.MenuHome_release_notes_title),
-					R.drawable.icon_small,
-					Tools.getString(R.string.MenuHome_release_notes),
-					Tools.getString(R.string.Button_updates),
-					forums_action,
-					Tools.getString(R.string.Button_close),
-					close_action,
-					R.string.ignoreBetaNotes
-					);
-		}*/
-		
-		/*
-		if (!new File(Tools.getNoteSkinsDir()).canRead()) {
-			Tools.installGraphics(this);
-		}
-		*/
-		
-		if (Tools.getBooleanSetting(R.string.installSamples, R.string.installSamplesDefault) ||
-			!Tools.getBooleanSetting(R.string.ignoreNewUserNotes, R.string.ignoreNewUserNotesDefault)) {
-			// Make folders and install sample songs
-			if (Tools.isMediaMounted() && 
-				Tools.makeBeatsDir()
-				) {
-				//Tools.installSampleSongs(this);
-				Tools.putSetting(R.string.installSamples, "0");
-			}
-		} else {
-			// Always make folders
-			if (Tools.isMediaMounted()) Tools.makeBeatsDir();
-		}
-	}
-	
 	// Activity Result
+	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data){
-		switch (requestCode) {
-			case SELECT_MUSIC:
-				if (resultCode == RESULT_OK) {
-					if (Tools.getBooleanSetting(R.string.autoStart, R.string.autoStartDefault)) {
-						Tools.setContext(this);
-						new MenuStartGame(this, title).startGameCheck();
-					}
-				}
-				break;
-			default:
-				break;
+		if (requestCode == SELECT_MUSIC && resultCode == RESULT_OK) {
+			if (Tools.getBooleanSetting(R.string.autoStart, R.string.autoStartDefault)) {
+				Tools.setContext(this);
+				new MenuStartGame(this, title).startGameCheck();
+			}
+		}
+		if (requestCode == SELECT_SONG_PACK && resultCode == Activity.RESULT_OK) {
+				ToolsSaveFile.installSongPackFromIntent(this, data);
 		}
 	}
 	
@@ -244,19 +87,18 @@ public class MenuHome extends Activity {
 		updateLanguage();
 		
 		// Titlebar
-		title = Tools.getString(R.string.MenuHome_titlebar) + " [" + Tools.getString(R.string.App_version) + "]";
-		setTitle(title);
+		setTitle(Tools.getString(R.string.MenuHome_titlebar) + " [" + Tools.getString(R.string.App_version) + "]");
 		
 		// Menu items
-		formatMenuItem(((TextView) findViewById(R.id.start)), R.string.Menu_start);
-		formatMenuItem(((TextView) findViewById(R.id.select_song)), R.string.Menu_select_song);
-		formatMenuItem(((TextView) findViewById(R.id.settings)), R.string.Menu_settings);
-		formatMenuItem(((TextView) findViewById(R.id.download_songs)), R.string.Menu_download_songs);
-		formatMenuItem(((TextView) findViewById(R.id.exit)), R.string.Menu_exit);
+		formatMenuItem(findViewById(R.id.start), R.string.Menu_start);
+		formatMenuItem(findViewById(R.id.select_song), R.string.Menu_select_song);
+		formatMenuItem(findViewById(R.id.settings), R.string.Menu_settings);
+		formatMenuItem(findViewById(R.id.download_songs), R.string.Menu_download_songs);
+		formatMenuItem(findViewById(R.id.exit), R.string.Menu_exit);
 		
 		updateDifficulty();
-		
 		updateAutoPlay();
+		updateGameMode();
 		
 		// Game Mode
 		/*
@@ -266,7 +108,6 @@ public class MenuHome extends Activity {
 			gameMode.setImageResource(R.drawable.icon_sm);
 		}
 		*/
-		updateGameMode();
 		
 		// Background data icon
 		/*
@@ -307,15 +148,18 @@ public class MenuHome extends Activity {
 		
 		// Startup checks
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+
 		if (Tools.getBooleanSetting(R.string.resetSettings, R.string.resetSettingsDefault)) {
 			Tools.resetSettings();
 		}
 		Tools.setScreenDimensions();
 		setupLayout();
 
-		versionCheck();
-		showNotes();
+		if (Tools.getBooleanSetting(R.string.installSamples, R.string.installSamplesDefault)) {
+			// Make folders and install sample songs
+			Tools.installSampleSongs(this);
+			Tools.putSetting(R.string.installSamples, "0");
+		}
 		
 		if (Tools.getBooleanSetting(R.string.additionalVibrations, R.string.additionalVibrationsDefault)) {
 			v = ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE));
@@ -323,9 +167,10 @@ public class MenuHome extends Activity {
 		}
 	}
 	
+	@SuppressLint("ClickableViewAccessibility")
 	private void formatMenuItem(final TextView tv, int text) {
 		Typeface tf = Typeface.createFromAsset(getAssets(), MENU_FONT);
-		float textSize = 22f;
+		float textSize = 40f;
 		if (largeText) {
 			textSize += 6f;
 		}
@@ -344,28 +189,24 @@ public class MenuHome extends Activity {
 		tv.setShadowLayer(5f, 0, 0, Color.WHITE);
 		tv.setGravity(Gravity.CENTER);
 		// We do this instead of ColorStateList since ColorStateList doesn't deal with shadows
-		tv.setOnFocusChangeListener(new OnFocusChangeListener() {
-			public void onFocusChange(View v, boolean hasFocus) {
-				if (hasFocus) {
-					tv.setTextColor(Color.WHITE);
-					tv.setShadowLayer(9f, 0, 0, Color.BLACK);
-				} else {
-					tv.setTextColor(Color.BLACK);
-					tv.setShadowLayer(7f, 0, 0, Color.WHITE);
-				}
+		tv.setOnFocusChangeListener((v, hasFocus) -> {
+			if (hasFocus) {
+				tv.setTextColor(Color.WHITE);
+				tv.setShadowLayer(9f, 0, 0, Color.BLACK);
+			} else {
+				tv.setTextColor(Color.BLACK);
+				tv.setShadowLayer(7f, 0, 0, Color.WHITE);
 			}
 		});
-		tv.setOnTouchListener(new OnTouchListener() {
-			public boolean onTouch(View v, MotionEvent e) {
-				if (e.getAction() == MotionEvent.ACTION_DOWN) {
-					tv.setTextColor(Color.WHITE);
-					tv.setShadowLayer(9f, 0, 0, Color.BLACK);
-				} else if (e.getAction() == MotionEvent.ACTION_UP) {
-					tv.setTextColor(Color.BLACK);
-					tv.setShadowLayer(7f, 0, 0, Color.WHITE);
-				}
-				return false;
+		tv.setOnTouchListener((v, e) -> {
+			if (e.getAction() == MotionEvent.ACTION_DOWN) {
+				tv.setTextColor(Color.WHITE);
+				tv.setShadowLayer(9f, 0, 0, Color.BLACK);
+			} else if (e.getAction() == MotionEvent.ACTION_UP) {
+				tv.setTextColor(Color.BLACK);
+				tv.setShadowLayer(7f, 0, 0, Color.WHITE);
 			}
+			return false;
 		});
 		tv.setText(text);
 	}
@@ -385,151 +226,102 @@ public class MenuHome extends Activity {
 		
 		// Difficulty button
 		final TextView difficulty = findViewById(R.id.difficulty);
-		difficulty.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				vibrate();
-				//changeDifficulty();
-				nextDifficulty();
+		difficulty.setOnClickListener(v -> {
+			vibrate();
+			//changeDifficulty();
+			nextDifficulty();
+		});
+		difficulty.setOnFocusChangeListener((v, hasFocus) -> {
+			if (hasFocus) {
+				difficulty.setBackgroundColor(Color.BLACK);
+			} else {
+				// Using the image increases the view's height and shifts the menu a bit,
+				// so let's just forget about the background
+				//difficulty.setBackgroundResource(R.drawable.difficulty_header);
+				difficulty.setBackgroundColor(Color.TRANSPARENT);
 			}
 		});
-		difficulty.setOnFocusChangeListener(new OnFocusChangeListener() {
-			public void onFocusChange(View v, boolean hasFocus) {
-				if (hasFocus) {
-					difficulty.setBackgroundColor(Color.BLACK);
-				} else {
-					// Using the image increases the view's height and shifts the menu a bit,
-					// so let's just forget about the background  
-					//difficulty.setBackgroundResource(R.drawable.difficulty_header);
-					difficulty.setBackgroundColor(Color.TRANSPARENT);
-				}
-			}
-		});		
 		
 		// AutoPlay button
 		TextView autoPlay = findViewById(R.id.autoPlay);
 		autoPlay.setTextColor(Color.RED);
 		autoPlay.setShadowLayer(7f, 0, 0, Color.WHITE);
-		autoPlay.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				vibrate();
-				//changeAutoPlay();
-				nextAutoPlay();
-			}
+		autoPlay.setOnClickListener(v -> {
+			vibrate();
+			toggleAutoPlay();
 		});
 		
 		// Game Mode
-		ImageView gameModePrev = findViewById(R.id.gameModePrev);
-		ImageView gameModeNext = findViewById(R.id.gameModeNext);
 		final ImageView gameMode = findViewById(R.id.gameMode);
+		gameMode.setOnClickListener(v -> {
+			vibrate();
+			toggleGameMode();
+		});
 		
 		int maxHeight = Tools.button_h * 2 / 3;
 		gameMode.setAdjustViewBounds(true);
 		gameMode.setMaxHeight(maxHeight);
-		gameModePrev.setAdjustViewBounds(true);
-		gameModePrev.setMaxHeight(maxHeight);
-		gameModeNext.setAdjustViewBounds(true);
-		gameModeNext.setMaxHeight(maxHeight);
 		
-		OnClickListener onGameModePrev = new OnClickListener() {
-			public void onClick(View v) {
-				vibrate();
-				nextGameMode(true);
-			}
-		};
-		gameModePrev.setOnClickListener(onGameModePrev);
-		
-		OnClickListener onGameModeNext = new OnClickListener() {
-			public void onClick(View v) {
-				vibrate();
-				nextGameMode(false);
-			}
-		};
-		gameMode.setOnClickListener(onGameModeNext);
-		gameModeNext.setOnClickListener(onGameModeNext);
-		
-		gameMode.setOnFocusChangeListener(new OnFocusChangeListener() {
-			public void onFocusChange(View v, boolean hasFocus) {
-				if (hasFocus) {
-					gameMode.setBackgroundColor(Color.BLACK);
-				} else {
-					gameMode.setBackgroundColor(Color.TRANSPARENT);
-				}
-			}
-		});	
-		
-		/*
-		// Background Data button
-		ImageView backgroundData = (ImageView) findViewById(R.id.backgroundData);
-		backgroundData.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				showBackgroundData();
+		gameMode.setOnFocusChangeListener((v, hasFocus) -> {
+			if (hasFocus) {
+				gameMode.setBackgroundColor(Color.BLACK);
+			} else {
+				gameMode.setBackgroundColor(Color.TRANSPARENT);
 			}
 		});
-		*/
 		
 		// Start button
 		TextView start_b = findViewById(R.id.start);
-		start_b.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				vibrate();
-				new MenuStartGame(MenuHome.this, title).startGameCheck();
-			}
+		start_b.setOnClickListener(v -> {
+			vibrate();
+			new MenuStartGame(MenuHome.this, title).startGameCheck();
 		});
 		
 		// Select Song button
 		TextView select_song_b = findViewById(R.id.select_song);
-		select_song_b.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				vibrate();
-				if (Tools.isMediaMounted()) {
-					Intent i = new Intent();
-					i.setClass(MenuHome.this, MenuFileChooser.class);
-					startActivityForResult(i, SELECT_MUSIC);
-				}
-			}
+		select_song_b.setOnClickListener(v -> {
+			vibrate();
+			Intent i = new Intent();
+			i.setClass(MenuHome.this, MenuFileChooser.class);
+			startActivityForResult(i, SELECT_MUSIC);
 		});
-		
+
 		// Settings button
 		TextView settings_b = findViewById(R.id.settings);
-		settings_b.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				vibrate();
-				Intent i = new Intent();
-				i.setClass(MenuHome.this, MenuSettings.class);
-				startActivity(i);
-			}
+		settings_b.setOnClickListener(v -> {
+			vibrate();
+			Intent i = new Intent();
+			i.setClass(MenuHome.this, MenuSettings.class);
+			startActivity(i);
 		});
-		
+
 		// Download Songs button
 		TextView download_songs_b = findViewById(R.id.download_songs);
-		download_songs_b.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				vibrate();
-				if (Tools.isMediaMounted()) {
-					Tools.startWebsiteActivity(Tools.getString(R.string.Url_downloads));
-				}
-			}
+		download_songs_b.setOnClickListener(v -> {
+			vibrate();
+			Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+			intent.addCategory(Intent.CATEGORY_OPENABLE);
+			intent.setType("*/*");
+			startActivityForResult(intent, SELECT_SONG_PACK);
 		});
 		
 		// Exit button
 		TextView exit_b = findViewById(R.id.exit);
-		exit_b.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				vibrate();
-				//backgroundDataUncheck();
-				finish();
-			}
+		exit_b.setOnClickListener(v -> {
+			vibrate();
+			//backgroundDataUncheck();
+			finish();
 		});
 		
 		// Setup navigation for TVs/keyboard
 		setupDpadNavigation();
 	}
 	
-	private static int[] viewIds = {
+	private static final int[] viewIds = {
 		R.id.start,
 		R.id.select_song,
-		R.id.download_songs,
 		R.id.settings,
+		R.id.download_songs,
 		R.id.exit,
 		R.id.difficulty,
 		R.id.gameMode
@@ -628,31 +420,18 @@ public class MenuHome extends Activity {
 				);
 	}
 	*/
-	
-	/*
-	private void changeAutoPlay() {
-		showAlertDialog(
-				R.drawable.icon_run,
-				Tools.getString(R.string.autoPlayTitle),
-				R.string.autoPlay,
-				Integer.parseInt(Tools.getSetting(R.string.autoPlay, R.string.autoPlayDefault)),
-				Tools.getStringArray(R.array.toggle),
-				Tools.getStringArray(R.array.toggleValues)
-				);
-	}
-	*/
-	private void nextAutoPlay() {
-		int autoPlay = Integer.parseInt(Tools.getSetting(R.string.autoPlay, R.string.autoPlayDefault));
-		autoPlay++;
-		if (autoPlay > 1) autoPlay = 0;
-		Tools.putSetting(R.string.autoPlay, Integer.toString(autoPlay));
+
+	private void toggleAutoPlay() {
+		boolean autoPlay = Tools.getBooleanSetting(R.string.autoPlay, R.string.autoPlayDefault);
+		autoPlay = !autoPlay;
+		Tools.putSetting(R.string.autoPlay, String.valueOf(autoPlay ? 1 : 0));
 		updateAutoPlay();
 	}
 	
 	private void updateAutoPlay() {
 		// Header font
 		Typeface tf = Typeface.createFromAsset(getAssets(), MENU_FONT);
-		float textSize = 17f;
+		float textSize = 25f;
 		if (largeText) {
 			textSize += 3f;
 		}
@@ -669,9 +448,11 @@ public class MenuHome extends Activity {
 			autoPlay.setTypeface(tf);
 		}
 		if (Tools.getBooleanSetting(R.string.autoPlay, R.string.autoPlayDefault)) {
-			autoPlay.setText(Tools.getString(R.string.Menu_auto));
+			autoPlay.setPaintFlags(0);
+			//autoPlay.setText(Tools.getString(R.string.Menu_auto));
 		} else {
-			autoPlay.setText("        ");
+			autoPlay.setPaintFlags(autoPlay.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+			//autoPlay.setText("        ");
 		}
 		autoPlay.setTextSize(textSize);
 	}
@@ -688,7 +469,7 @@ public class MenuHome extends Activity {
 	private void updateDifficulty() {
 		// Header font
 		Typeface tf = Typeface.createFromAsset(getAssets(), MENU_FONT);
-		float textSize = 17f;
+		float textSize = 25f;
 		if (largeText) {
 			textSize += 3f;
 		}
@@ -698,7 +479,7 @@ public class MenuHome extends Activity {
 		//textSize = Tools.scale(textSize);
 		
 		// Difficulty header
-		TextView difficulty = (TextView) findViewById(R.id.difficulty);
+		TextView difficulty = findViewById(R.id.difficulty);
 		if (largeText) {
 			//difficulty.setTypeface(tf, Typeface.BOLD);
 			difficulty.setTypeface(Typeface.SANS_SERIF, Typeface.BOLD);
@@ -731,24 +512,18 @@ public class MenuHome extends Activity {
 				break;
 		}
 	}
-	
-	// Ugly, won't fix
-	private void nextGameMode(boolean prev) {
+
+	private void toggleGameMode() {
 		int gameMode = Integer.parseInt(Tools.getSetting(R.string.gameMode, R.string.gameModeDefault));
-		if (prev) {
-			gameMode -= 1;
-			if (gameMode < 0) gameMode = 1;
-		} else {
-			gameMode += 1;
-			if (gameMode > 1) gameMode = 0;
-		}
+		gameMode += 1;
+		if (gameMode == 2) gameMode = 0;
 		Tools.putSetting(R.string.gameMode, Integer.toString(gameMode));
 		updateGameMode();
 	}
-	
+
 	private void updateGameMode() {
 		Tools.updateGameMode();
-		ImageView gameMode = (ImageView) findViewById(R.id.gameMode);
+		ImageView gameMode = findViewById(R.id.gameMode);
 		switch(Tools.gameMode) {
 			case Tools.REVERSE:
 				gameMode.setImageResource(R.drawable.mode_step_down);
