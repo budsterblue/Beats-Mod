@@ -1,4 +1,4 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,8 +8,8 @@ import java.util.Queue;
 public class DataFile {
 	
 	// Stepfile
-	private String filename = "";
-	private String path = "";
+	private final String filename;
+	private final String path;
 	
 	// Strings
 	private String title = "";
@@ -36,24 +36,24 @@ public class DataFile {
 	// Genre, etc.?
 	
 	// Arrays
-	private ArrayList<Float> bpmBeat = new ArrayList<Float>();
-	private ArrayList<Float> bpmValue = new ArrayList<Float>();
-	private ArrayList<Float> stopsBeat = new ArrayList<Float>();
-	private ArrayList<Float> stopsValue = new ArrayList<Float>();
-	private ArrayList<Float> bgchangeBeat = new ArrayList<Float>();
-	private ArrayList<File> bgchangeFile = new ArrayList<File>();
+	private final ArrayList<Float> bpmBeat = new ArrayList<>();
+	private final ArrayList<Float> bpmValue = new ArrayList<>();
+	private final ArrayList<Float> stopsBeat = new ArrayList<>();
+	private final ArrayList<Float> stopsValue = new ArrayList<>();
+	private final ArrayList<Float> bgchangeBeat = new ArrayList<>();
+	private final ArrayList<File> bgchangeFile = new ArrayList<>();
 
 	// Notes Data
-	public ArrayList<DataNotesData> notesData = new ArrayList<DataNotesData>();
+	public ArrayList<DataNotesData> notesData = new ArrayList<>();
 	
 	// md5 Hash
 	public String md5hash;
 	
 	// File-finding
-	private String imageFileExtensions[] = {
+	private final String[] imageFileExtensions = {
 		".jpg", ".JPG", ".png", ".PNG", ".bmp", ".BMP"
 	};
-	private String musicFileExtensions[] = {
+	private final String[] musicFileExtensions = {
 		// File existence check, prefers MP3s over OGGs
 		// See http://code.google.com/p/android/issues/detail?id=11590
 		".mp3", ".MP3",
@@ -62,13 +62,13 @@ public class DataFile {
 		".wav", ".WAV",
 		".mp3.mp3", ".mp3.MP3", ".MP3.MP3" // in case of laziness in renaming
 	};
-	private String bgFileSuffixe[] = {
+	private final String[] bgFileSuffixe = {
 		"", "bg", " bg", "-bg"
 	};
-	private String bnFileSuffixe[] = {
+	private final String[] bnFileSuffixe = {
 		"", "bn", " bn", "-bn"
 	};
-	private String noFileSuffixe[] = {
+	private final String[] noFileSuffixe = {
 		""
 	};
 	
@@ -153,9 +153,23 @@ public class DataFile {
 		if (background == null) {
 			try {
 				File[] files = new File(path).listFiles();
-				for (File f : files) {
-					// Look for big files first over 75kbs
-					if (f.length() > 75000) {
+				if (files != null) {
+					for (File f : files) {
+						// Look for big files first over 75kbs
+						if (f.length() > 75000) {
+							String name = f.getAbsolutePath();
+							for (String suffix : imageFileExtensions) {
+								if (name.endsWith(suffix)) {
+									background = f;
+									return;
+								}
+							}
+						}
+					}
+				}
+				// Still none? Check rest, and use first image found
+				if (files != null) {
+					for (File f : files) {
 						String name = f.getAbsolutePath();
 						for (String suffix : imageFileExtensions) {
 							if (name.endsWith(suffix)) {
@@ -165,17 +179,7 @@ public class DataFile {
 						}
 					}
 				}
-				// Still none? Check rest, and use first image found
-				for (File f : files) {
-					String name = f.getAbsolutePath();
-					for (String suffix : imageFileExtensions) {
-						if (name.endsWith(suffix)) {
-							background = f;
-							return;
-						}
-					}
-				}
-			} catch (Exception e) {} // Whatever
+			} catch (Exception ignored) {} // Whatever
 		}
 	}
 	public File getBackground() { return background; }
@@ -194,16 +198,18 @@ public class DataFile {
 		if (music == null) {
 			try {
 				File[] files = new File(path).listFiles();
-				for (File f : files) {
-					String name = f.getAbsolutePath();
-					for (String suffix : musicFileExtensions) {
-						if (name.endsWith(suffix)) {
-							music = f;
-							return;
+				if (files != null) {
+					for (File f : files) {
+						String name = f.getAbsolutePath();
+						for (String suffix : musicFileExtensions) {
+							if (name.endsWith(suffix)) {
+								music = f;
+								return;
+							}
 						}
 					}
 				}
-			} catch (Exception e) {} // Whatever
+			} catch (Exception ignored) {} // Whatever
 		}
 	}
 	public File getMusic() { return music; }
@@ -222,23 +228,6 @@ public class DataFile {
 	public boolean getSelectable() { return selectable; }
 	
 	// Arrays - assume all beats are added sequentially
-	public void clearBPMs(DataNotesData nd) { // For .osu parsing
-		nd.bpmBeat = bpmBeat;
-		nd.bpmValue = bpmValue;
-		bpmBeat = new ArrayList<Float>();
-		bpmValue = new ArrayList<Float>();
-	}
-	public float getBPM(DataNotesData nd, float beat) {
-		int index = 0;
-		for (int i = 0; i < nd.bpmBeat.size(); i++) {
-			if (nd.bpmBeat.get(i) <= beat) {
-				index = i;
-			} else {
-				break;
-			}
-		}
-		return nd.bpmValue.get(index);
-	}
 	public void addBPM(float beat, float value) {
 		bpmBeat.add(beat);
 		bpmValue.add(value);
@@ -254,26 +243,8 @@ public class DataFile {
 		}
 		return bpmValue.get(index);
 	}
-	public String getBPMRange(int notesDataIndex) {
-		if (bpmValue.size() == 0) { // Will happen with .osu parsing
-			float min = Float.MAX_VALUE;
-			float max = Float.MIN_VALUE;
-			ArrayList<Float> osuBPMValue;
-			if (notesData.size() > 0 && (osuBPMValue = notesData.get(notesDataIndex).bpmValue) != null) {
-				if (osuBPMValue.size() > 1) {
-					for (int i = 0; i < osuBPMValue.size(); i++) { // Just look at the first one
-						float value = (60f * 1000f) / osuBPMValue.get(i);
-						if (value < min) min = value;
-						if (value > max) max = value;
-					}
-					return min + "-" + max;
-				} else {
-					return ((60f * 1000f) / osuBPMValue.get(0)) + "";
-				}
-			} else {
-				return "ERROR";
-			}
-		} else if (bpmValue.size() > 1) {
+	public String getBPMRange() {
+		if (bpmValue.size() > 1) {
 			float min = Float.MAX_VALUE;
 			float max = Float.MIN_VALUE;
 			for (int i = 0; i < bpmValue.size(); i++) {
@@ -301,10 +272,10 @@ public class DataFile {
 	}
 	
 	public Queue<Float> getStopsBeat() {
-		return new LinkedList<Float>(stopsBeat);
+		return new LinkedList<>(stopsBeat);
 	}
 	public Queue<Float> getStopsValue() {
-		return new LinkedList<Float>(stopsValue);
+		return new LinkedList<>(stopsValue);
 	}
 	
 	public void addBGChange(float beat, String filename) throws DataParserException {
@@ -340,16 +311,16 @@ public class DataFile {
 		//return notesData.get(notesDataIndex);
 	//}
 	public String getNotesDataDifficulties() {
-		String difficulties = "";
+		StringBuilder difficulties = new StringBuilder();
 		for (int i = 0; i < notesData.size(); i++) {
-			if (!difficulties.equals("")) {
-				difficulties += ", ";
+			if (!difficulties.toString().equals("")) {
+				difficulties.append(", ");
 			}
 			DataNotesData nd = notesData.get(i);
-			difficulties += nd.getDifficulty().toString();
-			difficulties += " [" + nd.getDifficultyMeter() + "]"; 
+			difficulties.append(nd.getDifficulty().toString());
+			difficulties.append(" [").append(nd.getDifficultyMeter()).append("]");
 		}
-		return difficulties;
+		return difficulties.toString();
 	}
 	/*
 	public int getNotesCount(int notesDataIndex) throws DataParserException {

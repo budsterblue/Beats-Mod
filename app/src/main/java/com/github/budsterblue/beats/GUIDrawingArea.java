@@ -1,4 +1,4 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

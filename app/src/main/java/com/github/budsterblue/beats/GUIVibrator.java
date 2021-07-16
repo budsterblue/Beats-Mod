@@ -1,4 +1,4 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
 
 import android.content.Context;
 import android.os.Build;
@@ -15,9 +15,9 @@ public class GUIVibrator {
 	// This is called in GUIHandler's constructor, which is called by GUIGame's onCreate 
 	public GUIVibrator() {
 		try {
-			vibrateMiss = Integer.valueOf(Tools.getSetting(R.string.vibrateMiss, R.string.vibrateMissDefault));
-			vibrateTap = Integer.valueOf(Tools.getSetting(R.string.vibrateTap, R.string.vibrateTapDefault));
-			vibrateHold = Integer.valueOf(Tools.getSetting(R.string.vibrateHold, R.string.vibrateHoldDefault));
+			vibrateMiss = Integer.parseInt(Tools.getSetting(R.string.vibrateMiss, R.string.vibrateMissDefault));
+			vibrateTap = Integer.parseInt(Tools.getSetting(R.string.vibrateTap, R.string.vibrateTapDefault));
+			vibrateHold = Integer.parseInt(Tools.getSetting(R.string.vibrateHold, R.string.vibrateHoldDefault));
 			holdsCount = 0;
 			v = (Vibrator)Tools.c.getSystemService(Context.VIBRATOR_SERVICE);
 		} catch (Exception e) {

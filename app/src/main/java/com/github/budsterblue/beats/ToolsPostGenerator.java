@@ -1,22 +1,23 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.zip.*;
 
 public class ToolsPostGenerator {
 
-	private static String extractPath = "output/extract/";
-	private static String outputPath = "output/post/";
-	private static String websiteURL = "http://beatsportable.com/static/songs/";
-	private static String downloadImage = "http://beatsportable.com/static/images/download.png";
-	private static String supportThread = "http://beatsportable.com/forum/viewtopic.php?t=18";
-	
-	private static String songPack = "Otaku's Dream 5th Anime Mix -PAD Sector-";
-	private static String bannerPath = websiteURL + songPack + "/banners/";
-	private static String downloadPath = websiteURL + songPack + "/packs/";;
-	private static String listPath = "Z:\\_Packs\\Songs-zipped\\Songs\\Otaku's Dream 5th Anime Mix -PAD Sector-\\packs";
-	private static String releaseThread = "http://beatsportable.com/forum/viewtopic.php?f=31&t=450";
+	private static final String extractPath = "output/extract/";
+	private static final String outputPath = "output/post/";
+	private static final String websiteURL = "http://beatsportable.com/static/songs/";
+	private static final String downloadImage = "http://beatsportable.com/static/images/download.png";
+	private static final String supportThread = "http://beatsportable.com/forum/viewtopic.php?t=18";
+
+	private static final String songPack = "Otaku's Dream 5th Anime Mix -PAD Sector-";
+	private static final String bannerPath = websiteURL + songPack + "/banners/";
+	private static final String downloadPath = websiteURL + songPack + "/packs/";
+	private static final String listPath = "Z:\\_Packs\\Songs-zipped\\Songs\\Otaku's Dream 5th Anime Mix -PAD Sector-\\packs";
+	private static final String releaseThread = "http://beatsportable.com/forum/viewtopic.php?f=31&t=450";
 	
 	public static void main(String[] args) {
 		try {
@@ -26,7 +27,7 @@ public class ToolsPostGenerator {
 			extractDir.mkdirs();
 			
 			File dir = new File(listPath);
-			for (File file : dir.listFiles()) {
+			for (File file : Objects.requireNonNull(dir.listFiles())) {
 				String filename = file.getPath();
 				if (Tools.isStepfilePack(filename)) {
 					String stepfile = unzip(filename);
@@ -77,13 +78,13 @@ public class ToolsPostGenerator {
 			}
 			
 			System.out.println("[*]" + basename);
-			String post = 
+			String post =
 				"[img]" + cleanup(bannerPath) + cleanup(basename) + ".png" + "[/img]" + "\n" +
     			"[size=100][font=Comic Sans MS]" + "\n" +
     			"[b]Song:[/b] " + title + "\n" +
     			"[b]Artist:[/b] " + artist + "\n" +
     			"[b]Credit:[/b] " + df.getCredit() + "\n" +
-    			"[b]BPM Range: [/b] " + df.getBPMRange(dp.notesDataIndex) + "\n" +
+    			"[b]BPM Range: [/b] " + df.getBPMRange() + "\n" +
     			"[b]Difficulty:[/b] " + df.getNotesDataDifficulties() + "\n" +
     			"[b]Song Pack:[/b] " + "[url=" + releaseThread + "]" + songPack + "[/url]" + "\n" +
     			"[/font][/size]" + "\n" +
@@ -92,7 +93,7 @@ public class ToolsPostGenerator {
     			""
 				;
 			String outputFile = outputPath + basename + ".txt";
-			Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), "UTF8"));
+			Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), StandardCharsets.UTF_8));
 			out.write(post);
 			out.close();
 			
@@ -113,7 +114,7 @@ public class ToolsPostGenerator {
 	{
 		is = new BufferedInputStream(zipfile.getInputStream(entry));
 		int count;
-		byte data[] = new byte[Tools.BUFFER];
+		byte[] data = new byte[Tools.BUFFER];
 		FileOutputStream fos = new FileOutputStream(path);
 		dest = new BufferedOutputStream(fos, Tools.BUFFER);
 		while ((count = is.read(data, 0, Tools.BUFFER)) != -1) {
@@ -135,7 +136,7 @@ public class ToolsPostGenerator {
 		zipfile = new ZipFile(file);
 		e = zipfile.entries();
 		while (e.hasMoreElements()) {
-			entry = (ZipEntry) e.nextElement();
+			entry = e.nextElement();
 			if (!entry.isDirectory()) {
 				if (Tools.isSMFile(entry.getName())) {
 					stepfile = extractPath + getFilename(entry.getName());

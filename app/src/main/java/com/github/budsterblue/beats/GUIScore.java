@@ -1,4 +1,6 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
+
+import androidx.annotation.NonNull;
 
 public class GUIScore {
 	
@@ -46,6 +48,7 @@ public class GUIScore {
 			this.g = g;
 			this.b = b;
 		}
+		@NonNull
 		public String toString() {
 			return this.name;
 		}
@@ -66,20 +69,19 @@ public class GUIScore {
 	public GUIScore() {
 		// Default start settings
 		this.score = 0;
-		this.healthMax = Integer.valueOf(
+		this.healthMax = Integer.parseInt(
 				Tools.getSetting(R.string.healthMax, R.string.healthMaxDefault));
 		this.health = this.healthMax / 2;
-		this.healthPenalty = Integer.valueOf(
+		this.healthPenalty = Integer.parseInt(
 				Tools.getSetting(R.string.healthPenalty, R.string.healthPenaltyDefault));
 		this.healthGain = this.healthPenalty / 4;
 		this.comboCount = 0;
 		this.comboBest = 0;
 		this.noteCount = 0;
 		this.accuracyChart = new int[11]; // size of AccuracyTypes
-		this.accuracyLevel = Integer.valueOf(
+		this.accuracyLevel = Integer.parseInt(
 				Tools.getSetting(R.string.accuracyLevel, R.string.accuracyLevelDefault)); // in ms
 		if (this.accuracyLevel == 0) this.accuracyLevel = 1; // Just in case, to prevent divide-by-zero
-		if (Tools.gameMode == Tools.OSU_MOD) this.accuracyLevel *= 1.5f; // more lenient with osu! Mod
 		this.gameOver = false;
 		this.isPaused = false;
 		this.showPercent = Tools.getBooleanSetting(R.string.showPercent, R.string.showPercentDefault);
@@ -260,7 +262,7 @@ public class GUIScore {
 		// Not GameOver
 		if (accuracy < IGNORE_BELOW_THRESHOLD) {
 			return AccuracyTypes.X_IGNORE_BELOW; // Underneath the arrows
-		} else if (accuracy > IGNORE_ABOVE_THRESHOLD && Tools.gameMode != Tools.OSU_MOD) {
+		} else if (accuracy > IGNORE_ABOVE_THRESHOLD) {
 			return AccuracyTypes.X_IGNORE_ABOVE; // Above the GOOD range
 		} else {
 			int scoreIncrease;

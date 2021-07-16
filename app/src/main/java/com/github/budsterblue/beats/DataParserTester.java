@@ -1,4 +1,4 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
 
 public class DataParserTester {
 
@@ -12,7 +12,7 @@ public class DataParserTester {
 			DataParser dp = new DataParser(path);
 			// Info
 			System.out.println(dp.df.getArtist());
-			System.out.println(dp.df.getBPMRange(dp.notesDataIndex));
+			System.out.println(dp.df.getBPMRange());
 			System.out.println(dp.df.getFilename());
 			System.out.println(dp.df.getNotesDataDifficulties());
 			System.out.println(dp.df.getOffset());
@@ -32,7 +32,7 @@ public class DataParserTester {
 			//System.out.println(nd.getNotesData());
 			
 			///*
-			dp.loadNotes(true, true, false, true);
+			dp.loadNotes(true, true, true);
 			/*
 			for (DataNote n : dp.df.notesData.get(0).notes) { 
 				System.out.println(n);

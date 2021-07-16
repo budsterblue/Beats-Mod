@@ -1,4 +1,4 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import androidx.annotation.NonNull;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,10 +18,10 @@ import android.widget.*;
 
 public class MenuFileArrayAdapter extends ArrayAdapter<MenuFileItem>{
 
-	private Context c;
-	private int id;
-	private ArrayList<MenuFileItem> items;
-	private boolean showSongBanners = Tools.getBooleanSetting(R.string.showSongBanners, R.string.showSongBannersDefault);
+	private final Context c;
+	private final int id;
+	private final ArrayList<MenuFileItem> items;
+	private final boolean showSongBanners = Tools.getBooleanSetting(R.string.showSongBanners, R.string.showSongBannersDefault);
 	
 	public MenuFileArrayAdapter(Context context, int textViewResourceId, ArrayList<MenuFileItem> items) {
 		super(context, textViewResourceId, items);
@@ -33,7 +34,8 @@ public class MenuFileArrayAdapter extends ArrayAdapter<MenuFileItem>{
 		return items.get(i); 
 	} 
 	
-	public View getView(int position, View convertView, ViewGroup parent) {
+	@androidx.annotation.NonNull
+	public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 		View v = convertView;
 		if (v == null) {
 			 LayoutInflater vi = (LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -46,7 +48,7 @@ public class MenuFileArrayAdapter extends ArrayAdapter<MenuFileItem>{
 				String s = i.getName();
 
 				if (i.getFile() == null) {
-					iv.setImageResource(R.drawable.icon_folder_parent);
+					iv.setImageResource(R.drawable.ic_arrow_back_filled_black);
 				} else if (i.isDirectory()) {
 					if (Tools.checkStepfileDir(i.getFile()) != null) {
 
@@ -56,45 +58,47 @@ public class MenuFileArrayAdapter extends ArrayAdapter<MenuFileItem>{
 							File f = new File(i.getPath());
 							if (f.isDirectory()) {
 								File[] files = f.listFiles();
-								for (File fi : files) {
-									String fs = fi.getPath();
-									if (fs.contains(".sm")) {
-										String bannerbg;
-										FileInputStream is;
-										BufferedReader reader;
-										final File smfile = new File(fs);
+								if (files != null) {
+									for (File fi : files) {
+										String fs = fi.getPath();
+										if (fs.contains(".sm")) {
+											String bannerbg;
+											FileInputStream is;
+											BufferedReader reader;
+											final File smfile = new File(fs);
 
-										if (smfile.exists()) {
-											try {
-												is = new FileInputStream(smfile);
-												reader = new BufferedReader(new InputStreamReader(is));
-												String line;
+											if (smfile.exists()) {
 												try {
-													line = reader.readLine();
-													while (line != null) {
-														if (line.contains("#BANNER")) {
-															bannerbg = line.replace("#BANNER:", "").replace(";", "").replace("../", "");
-															bannerpath = f + "/" + bannerbg;
-															break;
-														}
+													is = new FileInputStream(smfile);
+													reader = new BufferedReader(new InputStreamReader(is));
+													String line;
+													try {
 														line = reader.readLine();
+														while (line != null) {
+															if (line.contains("#BANNER")) {
+																bannerbg = line.replace("#BANNER:", "").replace(";", "").replace("../", "");
+																bannerpath = f + "/" + bannerbg;
+																break;
+															}
+															line = reader.readLine();
+														}
+													} catch (IOException e) {
+														e.printStackTrace();
 													}
-												} catch (IOException e) {
+												} catch (FileNotFoundException e) {
 													e.printStackTrace();
 												}
-											} catch (FileNotFoundException e) {
-												e.printStackTrace();
 											}
 										}
 									}
 								}
+
 							}
 
 							if (bannerpath != null) {
 								File imgFile = new File(bannerpath);
 								if (imgFile.exists()) {
-									Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-									iv.setImageBitmap(bitmap);
+									iv.setImageBitmap(BitmapFactory.decodeFile(imgFile.getAbsolutePath()));
 								} else {
 									iv.setImageResource(R.drawable.icon_small);
 								}
@@ -105,7 +109,7 @@ public class MenuFileArrayAdapter extends ArrayAdapter<MenuFileItem>{
 							iv.setImageResource(R.drawable.icon_small);
 						}
 					} else {
-						iv.setImageResource(R.drawable.icon_folder);
+						iv.setImageResource(R.drawable.ic_folder_filled_black);
 					}
 				} else if (Tools.isStepfile(i.getPath())) {
 					if (Tools.isSMFile(s)) {
@@ -116,11 +120,11 @@ public class MenuFileArrayAdapter extends ArrayAdapter<MenuFileItem>{
 						iv.setImageResource(R.drawable.icon_warning);
 					}
 				} else if (Tools.isStepfilePack(s)) {
-					iv.setImageResource(R.drawable.icon_zip);
+					iv.setImageResource(R.drawable.ic_folder_zip_filled_black);
 				} else if (Tools.isLink(s)) {
-					iv.setImageResource(R.drawable.icon_url);
+					iv.setImageResource(R.drawable.ic_link_filled_black);
 				} else if (Tools.isText(s)) {
-					iv.setImageResource(R.drawable.icon_text);
+					iv.setImageResource(R.drawable.ic_text_snippet_filled_black);
 				} else {
 					iv.setImageResource(R.drawable.icon_warning);
 				}

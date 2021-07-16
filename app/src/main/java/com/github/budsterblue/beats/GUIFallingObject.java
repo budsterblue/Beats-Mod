@@ -1,6 +1,6 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
 
-import com.beatsportable.beats.GUIScore.AccuracyTypes;
+import com.github.budsterblue.beats.GUIScore.AccuracyTypes;
 import android.graphics.Canvas;
 
 public abstract class GUIFallingObject {

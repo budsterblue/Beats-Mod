@@ -1,5 +1,4 @@
-package com.beatsportable.beats;
-import java.io.File;
+package com.github.budsterblue.beats;
 import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.Iterator;
@@ -40,17 +39,17 @@ public class DataParser implements Iterator<DataNote>  {
 		notesDataIndex = i;
 	}
 	
-	public void loadNotes(boolean jumps, boolean holds, boolean osu, boolean randomize)
+	public void loadNotes(boolean jumps, boolean holds, boolean randomize)
 	throws DataParserException {
 		if (Tools.isSMFile(df.getFilename())) {
 			DataParserSM.parseNotesData(
 					df, df.notesData.get(notesDataIndex),
-					jumps, holds, osu, randomize
+					jumps, holds, randomize
 					);
 		} else if (Tools.isDWIFile(df.getFilename())) {
 			DataParserDWI.parseNotesData(
 					df, df.notesData.get(notesDataIndex),
-					jumps, holds, osu, randomize
+					jumps, holds, randomize
 					);
 		} else {
 			throw new DataParserException(

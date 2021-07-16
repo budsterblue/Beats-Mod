@@ -1,4 +1,4 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
 
 import java.io.File;
 
@@ -7,8 +7,8 @@ import android.content.*;
 import android.os.*;
 
 public class MenuStartGame implements Runnable {
-	private Activity a;
-	private String title;
+	private final Activity a;
+	private final String title;
 	
 	private int defaultDifficulty;
 	private int availableDifficulty;
@@ -81,23 +81,19 @@ public class MenuStartGame implements Runnable {
 		String musicFilePath = dp.df.getMusic().getPath();
 		if (Tools.isOGGFile(musicFilePath) &&
 			!Tools.getBooleanSetting(R.string.ignoreOGGWarning, R.string.ignoreOGGWarningDefault) && 
-			Integer.valueOf(Tools.getSetting(R.string.manualOGGOffset, R.string.manualOGGOffsetDefault)) == 0
+			Integer.parseInt(Tools.getSetting(R.string.manualOGGOffset, R.string.manualOGGOffsetDefault)) == 0
 			) {
 			// OGG warning
-			DialogInterface.OnClickListener start_action = new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
-					startGameActivity();
-				}
+			DialogInterface.OnClickListener start_action = (dialog, id) -> {
+				dialog.cancel();
+				startGameActivity();
 			};
-			
-			DialogInterface.OnClickListener cancel_action = new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
-					setTitle();
-				}
+
+			DialogInterface.OnClickListener cancel_action = (dialog, id) -> {
+				dialog.cancel();
+				setTitle();
 			};
-			
+
 			Tools.warning(
 					Tools.getString(R.string.MenuStartGame_ogg_warning),
 					start_action,
@@ -115,20 +111,16 @@ public class MenuStartGame implements Runnable {
 		if (availableDifficulty != defaultDifficulty &&
 			!Tools.getBooleanSetting(R.string.ignoreDifficultyWarning, R.string.ignoreDifficultyWarningDefault)
 			) {
-			DialogInterface.OnClickListener start_action = new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
-					checkOGG();
-				}
+			DialogInterface.OnClickListener start_action = (dialog, id) -> {
+				dialog.cancel();
+				checkOGG();
 			};
 			
-			DialogInterface.OnClickListener cancel_action = new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
-					setTitle();
-				}
+			DialogInterface.OnClickListener cancel_action = (dialog, id) -> {
+				dialog.cancel();
+				setTitle();
 			};
-			
+
 			Tools.warning(
 					Tools.getString(R.string.MenuStartGame_difficulty_selected) + 
 					DataNotesData.Difficulty.values()[defaultDifficulty].toString() +
@@ -143,17 +135,15 @@ public class MenuStartGame implements Runnable {
 			checkOGG();
 		}
 	}
-	
-	private Handler handler = new Handler() {
+
+	private final Handler handler = new Handler(Looper.getMainLooper()) {
 		public void handleMessage(Message msg) {
-			switch (msg.what) {
-				case 0:
-					checkDifficulty();
-					break;
-				default: //case -1:
-					showFailParseMsg();
-					setTitle();
-					break;
+			//case -1:
+			if (msg.what == 0) {
+				checkDifficulty();
+			} else {
+				showFailParseMsg();
+				setTitle();
 			}
 		}
 	};
@@ -162,7 +152,7 @@ public class MenuStartGame implements Runnable {
 		try {
 			// Parse stepfile
 			dp = new DataParser(smFilePath);
-			defaultDifficulty = Integer.valueOf(
+			defaultDifficulty = Integer.parseInt(
 					Tools.getSetting(R.string.difficultyLevel, R.string.difficultyLevelDefault));
 			for (int i = dp.df.notesData.size(); i > 0; i--) {
 				availableDifficulty = dp.df.notesData.get(i-1).getDifficulty().ordinal();
@@ -175,10 +165,9 @@ public class MenuStartGame implements Runnable {
 			// Load notes
 			boolean jumps = Tools.getBooleanSetting(R.string.jumps, R.string.jumpsDefault);
 			boolean holds = Tools.getBooleanSetting(R.string.holds, R.string.holdsDefault);
-			boolean osu = (Tools.gameMode == Tools.OSU_MOD);
 			boolean randomize = Integer.parseInt(
 					Tools.getSetting(R.string.randomize, R.string.randomizeDefault)) != Randomizer.OFF;
-			dp.loadNotes(jumps, holds, osu, randomize);
+			dp.loadNotes(jumps, holds, randomize);
 			
 			// Sanity checks
 			if (!dp.hasNext()) {
@@ -186,7 +175,6 @@ public class MenuStartGame implements Runnable {
 			}
 			String musicFilePath = dp.df.getMusic().getPath();
 			if (dp.df.getMusic() == null ||
-				dp.df.getMusic().getPath() == null ||
 				dp.df.getMusic().getPath().length() == 0 ||
 				!dp.df.getMusic().exists() ||
 				!dp.df.getMusic().canRead()
@@ -211,7 +199,7 @@ public class MenuStartGame implements Runnable {
 	private void startGame() {
 		// Set the screen dimensions
 		// Have to be called outside of an onCreate for some reason...
-		Tools.setTopbarHeight();
+		Tools.setTopbarHeight(a);
 		Tools.setScreenDimensions();
 		// Run thread
 		showLoadingDialog();
@@ -219,10 +207,6 @@ public class MenuStartGame implements Runnable {
 	}
 	
 	public void startGameCheck() {
-		if (!Tools.isMediaMounted()) {
-			return;
-		}
-		
 		smFilePath = Tools.getSetting(R.string.smFilePath, R.string.smFilePathDefault);
 		
 		if (smFilePath.length() < 2) {

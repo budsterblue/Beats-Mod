@@ -1,4 +1,6 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 
 /*
@@ -74,13 +76,14 @@ public class DataNotesData implements Comparable<DataNotesData> {
 		EZ2_DOUBLE		("ez2-double", 10),
 		EZ2_REAL		("ez2-real", 7),
 		PARA_SINGLE		("para-single", 5);
-		private String name;
-		private int notesCount;
+		private final String name;
+		private final int notesCount;
 		NotesType(String name, int notesCount) {
 			this.name = name;
 			this.notesCount = notesCount;
 		}
 		public int getNotesCount() { return notesCount; }
+		@NonNull
 		public String toString() { return name; }
 	}
 	
@@ -92,7 +95,7 @@ public class DataNotesData implements Comparable<DataNotesData> {
 		CHALLENGE	(R.string.Difficulty_challenge),
 		EDIT		(R.string.Difficulty_edit),
 		UNKNOWN		(R.string.Difficulty_unknown);
-		private int name;
+		private final int name;
 		Difficulty(int name) {
 			this.name = name;
 		}
@@ -106,14 +109,10 @@ public class DataNotesData implements Comparable<DataNotesData> {
 	private Difficulty difficulty = Difficulty.BEGINNER;
 	private int difficultyMeter = 0;
 	// at least 5 values "voltage", "stream", "chaos", "freeze", and "air"
-	private ArrayList<Float> radarValues = new ArrayList<Float>(5);
-	
-	// These are references only for .osu files
-	public ArrayList<Float> bpmBeat;
-	public ArrayList<Float> bpmValue;
+	private final ArrayList<Float> radarValues = new ArrayList<>(5);
 	
 	private String notesData = "";
-	public ArrayList<DataNote> notes = new ArrayList<DataNote>();
+	public ArrayList<DataNote> notes = new ArrayList<>();
 	
 	public void setNotesType(NotesType notestype) { this.notestype = notestype; }
 	public NotesType getNotesType() { return notestype; }

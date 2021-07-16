@@ -1,9 +1,9 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import com.beatsportable.beats.GUIScore.AccuracyTypes;
+import com.github.budsterblue.beats.GUIScore.AccuracyTypes;
 
 public class GUIScoreDisplay {
 	//Endgame score display
@@ -62,7 +62,7 @@ public class GUIScoreDisplay {
 		
 		gameOverPaint.ARGB(opa, 255,255,255);
 		gameOverPaint.strokeARGB(opa,0,0,0);
-		gameOverPaint.draw(canvas, gameOverText, Tools.screen_w/2, Tools.scale(34));
+		gameOverPaint.draw(canvas, gameOverText, (float) (Tools.screen_w/2), Tools.scale(34));
 		
 		//int[] chart = score.accuracyChart;
 		AccuracyTypes[] types = AccuracyTypes.values();
@@ -94,7 +94,7 @@ public class GUIScoreDisplay {
 		scorePaint.draw(canvas, 
 				scoreText + 
 				score.score,
-				Tools.screen_w/2, Tools.scale(70 + i*22));
+				(float) Tools.screen_w/2, Tools.scale(70 + i*22));
 		
 		backBoxPaint.setARGB(opa/2, 0, 0, 0);
 		canvas.drawRect(
@@ -103,8 +103,8 @@ public class GUIScoreDisplay {
 		
 		backPaint.ARGB(opa, 255,255,255);
 		
-		backPaint.draw(canvas, back1, Tools.screen_w/2, Tools.screen_h - Tools.scale(100));
-		backPaint.draw(canvas, back2, Tools.screen_w/2, Tools.screen_h - Tools.scale(75));
+		backPaint.draw(canvas, back1, (float) Tools.screen_w/2, Tools.screen_h - Tools.scale(100));
+		backPaint.draw(canvas, back2, (float) Tools.screen_w/2, Tools.screen_h - Tools.scale(75));
 	}
 	
 }

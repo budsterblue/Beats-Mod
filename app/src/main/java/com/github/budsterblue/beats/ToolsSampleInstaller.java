@@ -1,19 +1,22 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
 
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
+import androidx.annotation.NonNull;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 
 public class ToolsSampleInstaller implements Runnable {
 	
-	private Activity a;
-	private String path;
-	private int raw;
-	private int message;
+	private final Activity a;
+	private final String path;
+	private final int raw;
+	private final int message;
 	private ProgressDialog extractingBar;
 	
 	private boolean success = false;
@@ -37,7 +40,7 @@ public class ToolsSampleInstaller implements Runnable {
 			FileOutputStream out = new FileOutputStream(path);
 			int count;
 			int progress = 0;
-			byte data[] = new byte[Tools.BUFFER];
+			byte[] data = new byte[Tools.BUFFER];
 			while ((count = in.read(data, 0, Tools.BUFFER)) != -1) {
 				out.write(data, 0, count);
 				progress += count;
@@ -59,6 +62,7 @@ public class ToolsSampleInstaller implements Runnable {
 		}		
 	}
 	
+	@SuppressLint("HandlerLeak")
 	public void extract() {
 		/*
 		DialogInterface.OnClickListener extract_action = new DialogInterface.OnClickListener() {
@@ -92,8 +96,8 @@ public class ToolsSampleInstaller implements Runnable {
 		extractingBar.setOwnerActivity(a);
 		extractingBar.show();
 		
-		extracthandler = new Handler() {
-			public void handleMessage(Message msg) {
+		extracthandler = new Handler(Looper.getMainLooper()) {
+			public void handleMessage(@NonNull Message msg) {
 				try {
 					if (extractingBar != null) extractingBar.dismiss();
 				} catch (IllegalArgumentException e) {

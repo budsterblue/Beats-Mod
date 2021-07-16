@@ -1,11 +1,11 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
- 
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -14,6 +14,7 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
  
 public class ToolsDownloader extends Activity implements Runnable {
@@ -22,14 +23,11 @@ public class ToolsDownloader extends Activity implements Runnable {
 	private String path;
 	private String errorMessage;
 	private ProgressDialog downloadBar;
-	private HttpURLConnection urlConnection;
-	
+
 	private void downloadFail() {
-		DialogInterface.OnClickListener exit_action = new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				dialog.cancel();
-				finish();
-			}
+		DialogInterface.OnClickListener exit_action = (dialog, id) -> {
+			dialog.cancel();
+			finish();
 		};
 		Tools.error(errorMessage, exit_action);
 	}
@@ -53,32 +51,30 @@ public class ToolsDownloader extends Activity implements Runnable {
 	private void installDownload() {
 		new ToolsUnzipper(this, path, false, true).unzip();
 	}
-	
-	private Handler handler = new Handler() {
+
+	private final Handler handler = new Handler(Looper.getMainLooper()) {
 		public void handleMessage(Message msg) {
-			switch (msg.what) {
-				case 0:
-					cancelDownloadBar();
-					installDownload();
-					break;
-				default: //case -1:
-					cancelDownloadBar();
-					downloadFail();
-					break;
+			//case -1:
+			if (msg.what == 0) {
+				cancelDownloadBar();
+				installDownload();
+			} else {
+				cancelDownloadBar();
+				downloadFail();
 			}
 		}
 	};
 	
 	public void run() {
 		try {
-			urlConnection = (HttpURLConnection) new URL(url).openConnection();
+			HttpURLConnection urlConnection = (HttpURLConnection) new URL(url).openConnection();
 			BufferedInputStream is = new BufferedInputStream(urlConnection.getInputStream());
 			BufferedOutputStream dest = new BufferedOutputStream(new FileOutputStream(path), Tools.BUFFER);			
 			
 			downloadBar.setMax(urlConnection.getContentLength());
 			int count;
 			int progress = 0;
-			byte data[] = new byte[Tools.BUFFER];
+			byte[] data = new byte[Tools.BUFFER];
 			while ((count = is.read(data, 0, Tools.BUFFER)) != -1) {
 				dest.write(data, 0, count);
 				progress += count;
@@ -104,22 +100,18 @@ public class ToolsDownloader extends Activity implements Runnable {
 	}
 	
 	private void download() {
-		DialogInterface.OnClickListener download_action = new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				dialog.cancel();
-				downloadFile();
-			}
+		DialogInterface.OnClickListener download_action = (dialog, id) -> {
+			dialog.cancel();
+			downloadFile();
 		};
-		DialogInterface.OnClickListener exit_action = new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				dialog.cancel();
-				finish();
-			}
+		DialogInterface.OnClickListener exit_action = (dialog, id) -> {
+			dialog.cancel();
+			finish();
 		};
 		
 		Tools.alert(
 				Tools.getString(R.string.Button_download),
-				R.drawable.icon_url,
+				android.R.drawable.stat_sys_download_done,
 				Tools.getString(R.string.ToolsDownloader_download_ask) + url,
 				Tools.getString(R.string.Button_yes),
 				download_action,
@@ -128,7 +120,6 @@ public class ToolsDownloader extends Activity implements Runnable {
 				-1
 				);
 	}
-	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.unzipper);
@@ -137,10 +128,13 @@ public class ToolsDownloader extends Activity implements Runnable {
 		// Download
 		Intent downloadIntent = getIntent();
 		Uri data = downloadIntent.getData();
-		if (data != null &&
-			(url = data.getScheme() + ":" + data.getSchemeSpecificPart()) != null &&
-			Tools.isStepfilePack(url))
-			{
+		if (data != null) {
+			url = data.getScheme() + ":" + data.getSchemeSpecificPart();
+		} else {
+			errorMessage = Tools.getString(R.string.ToolsDownloader_unsupported);
+			downloadFail();
+		}
+		if (Tools.isStepfilePack(url)) {
 			this.setTitle(
 					Tools.getString(R.string.ToolsDownloader_download) + 
 					downloadIntent.getData().getLastPathSegment()

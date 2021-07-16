@@ -1,4 +1,4 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
 
 import java.util.Arrays;
 
@@ -55,6 +55,7 @@ public class Scoreboard extends SQLiteOpenHelper implements Runnable {
 				return query.getInt(scoreIndex);
 			}
 		}
+		query.close();
 		return 0;
 	}
 	
@@ -71,7 +72,7 @@ public class Scoreboard extends SQLiteOpenHelper implements Runnable {
 	public void run() {
 		try {
 			Thread.sleep(500);
-		} catch (Exception e) {};
+		} catch (Exception ignored) {}
 		ContentValues inputs = new ContentValues();
 		inputs.put(KEY_MD5, md5);
 		inputs.put(KEY_SCORE, newScore);

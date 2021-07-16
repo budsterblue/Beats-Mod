@@ -1,4 +1,4 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
 
 import java.util.HashMap;
 
@@ -6,7 +6,7 @@ import android.util.Log;
 
 
 public class ToolsTracker {
-	private static String appVersion = "";
+	private static final String appVersion = "";
 	
 	// Called by MenuHome.onDestroy
 
@@ -18,8 +18,7 @@ public class ToolsTracker {
 		// logcat this
 		String ev = appVersion + "Error: " + event;
 		String atr = e.getMessage();
-		String val = value;
-		Log.e("Beats exception:", ev + " / " + atr + " / " + val);
+		Log.e("Beats exception:", ev + " / " + atr + " / " + value);
 	}
 	
 	public static void data(String event, String attribute, String value) {

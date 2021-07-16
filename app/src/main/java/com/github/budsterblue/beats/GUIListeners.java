@@ -1,4 +1,4 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
 
 import android.view.KeyEvent;
 import android.view.View.OnTouchListener;

@@ -1,4 +1,4 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
 
 import android.annotation.SuppressLint;
 import android.util.SparseIntArray;
@@ -14,7 +14,7 @@ public class GUIListenersMulti extends GUIListeners {
 	
 	public OnTouchListener getOnTouchListener() {
 		return new OnTouchListener() {
-			private SparseIntArray finger2pitch = new SparseIntArray();
+			private final SparseIntArray finger2pitch = new SparseIntArray();
 			@SuppressLint("ClickableViewAccessibility")
 			public boolean onTouch(View v, MotionEvent e) {
 				if (!v.hasFocus()) v.requestFocus();

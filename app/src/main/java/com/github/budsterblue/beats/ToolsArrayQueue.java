@@ -1,6 +1,6 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.util.AbstractQueue;
 import java.util.Iterator;
@@ -72,7 +72,7 @@ public class ToolsArrayQueue<T> extends AbstractQueue<T> {
 	public Iterator<T> iterator() {
 		return new Iterator<T>() {
 			int pos = start;
-			int _end = end;
+			final int _end = end;
 			public boolean hasNext() {
 				return pos != _end;
 			}
@@ -104,7 +104,7 @@ public class ToolsArrayQueue<T> extends AbstractQueue<T> {
 	@SuppressWarnings("unchecked")
 	@NonNull
 	@Override
-	public <U> U[] toArray(U[] a) {
+	public <U> U[] toArray(@androidx.annotation.NonNull U[] a) {
 		int size = size();
 		a = (size <= a.length) ? a : (U[]) new Object[size];
 		arraycopy(a, 0);

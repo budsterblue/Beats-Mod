@@ -1,17 +1,17 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.util.Iterator;
 
 public class GUIFallingObjectSpace implements Iterable<GUIFallingObject> {
 	/* A place to put timed falling objects into columns.*/
 	
-	private ToolsArrayQueue<GUIFallingObject>[] available = emptyObjArray();
-	private ToolsArrayQueue<GUIFallingObject>[] missed = emptyObjArray();
-	private ToolsArrayQueue<GUIFallingObject>[] done = emptyObjArray(); // To avoid calls to GC; extra overhead but avoids lag spikes
+	private final ToolsArrayQueue<GUIFallingObject>[] available = emptyObjArray();
+	private final ToolsArrayQueue<GUIFallingObject>[] missed = emptyObjArray();
+	private final ToolsArrayQueue<GUIFallingObject>[] done = emptyObjArray(); // To avoid calls to GC; extra overhead but avoids lag spikes
 	
-	private DataParser dp;
+	private final DataParser dp;
 	
 	/* If the object space has been changed since we last called fetchAll, this is null.
 	   Otherwise, it is the argument of the most recent fetchAll() call. */
@@ -21,7 +21,7 @@ public class GUIFallingObjectSpace implements Iterable<GUIFallingObject> {
 		@SuppressWarnings("unchecked")
 		ToolsArrayQueue<GUIFallingObject>[] arr = new ToolsArrayQueue[Tools.PITCHES];
 		for (int i = 0; i < Tools.PITCHES; i++) 
-			arr[i] = new ToolsArrayQueue<GUIFallingObject>();
+			arr[i] = new ToolsArrayQueue<>();
 		return arr;
 	}
 	
@@ -39,7 +39,7 @@ public class GUIFallingObjectSpace implements Iterable<GUIFallingObject> {
 	}
 	
 	//holds whose HOLD_END has not yet appeared
-	private GUIFallingHold [] holds_to_create = new GUIFallingHold[Tools.PITCHES];
+	private final GUIFallingHold [] holds_to_create = new GUIFallingHold[Tools.PITCHES];
 	public void update(int onScreenTime, int offScreenTime, GUIScore score) {
 		/* Update the viewing area.
 		 * All objects with time<offScreenTime are removed, and objects with time<=onScreenTime are added.
@@ -66,9 +66,8 @@ public class GUIFallingObjectSpace implements Iterable<GUIFallingObject> {
 				
 			//}
 		}
-		
-		boolean ALLOW_HOLDS = true;
-			while (dp.hasNext() && dp.peek().time <= onScreenTime) {
+
+		while (dp.hasNext() && dp.peek().time <= onScreenTime) {
 				DataNote currentNote = dp.next();
 				int pitch = currentNote.column;
 
@@ -145,7 +144,7 @@ public class GUIFallingObjectSpace implements Iterable<GUIFallingObject> {
 		}
 	}
 	
-	private ToolsArrayQueue<GUIFallingObject> _iter_Q = new ToolsArrayQueue<GUIFallingObject>();
+	private final ToolsArrayQueue<GUIFallingObject> _iter_Q = new ToolsArrayQueue<>();
 
 	@NonNull
 	public Iterator<GUIFallingObject> iterator() {

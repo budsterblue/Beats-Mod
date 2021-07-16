@@ -1,5 +1,6 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
 
+import androidx.annotation.NonNull;
 import android.annotation.SuppressLint;
 
 import java.util.ArrayList;
@@ -16,25 +17,18 @@ public class DataNote implements Comparable<DataNote> {
 	public int column; // Left Down Up Right
 	public int time; // time in ms of arrow event - 10.5s = 10500
 	public float beat;
-	// For osu!
-	public float[] coords; // {cx, cy, sx, sy}
-	public int num;
-	public String curveType;
-	public ArrayList<Float> curvePoints;
 	
 	public DataNote(NoteType noteType,
-		int fraction, int column, int time, float beat,
-		float[] coords, int num) {
+		int fraction, int column, int time, float beat) {
 		this.noteType = noteType;
 		this.fraction = fraction;
 		this.column = column;
 		this.time = time;
 		this.beat = beat;
-		this.coords = coords;
-		this.num = num;
 	}
 	
 	// For debugging
+	@NonNull
 	@SuppressLint("DefaultLocale")
 	public String toString() {
 		return String.format(

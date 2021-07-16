@@ -1,4 +1,4 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
 
 import android.graphics.Canvas;
 
@@ -31,10 +31,10 @@ public class GUIHandler { //TODO is there any reason this isn't abstract?
 	}
 	
 	public GUIHandler() {
-		fallpix_per_ms = Double.valueOf(
+		fallpix_per_ms = Double.parseDouble(
 				Tools.getSetting(R.string.speedMultiplier, R.string.speedMultiplierDefault)) / 3;
 		if (Tools.gameMode == Tools.STANDARD) fallpix_per_ms = -fallpix_per_ms; // scroll up
-		tapboxYOffset = Integer.valueOf(
+		tapboxYOffset = Integer.parseInt(
 				Tools.getSetting(R.string.tapboxYOffset, R.string.tapboxYOffsetDefault));
 		//tapboxYOffset += Tools.button_h * 0.25; // Shift up even more
 		autoPlay = Tools.getBooleanSetting(R.string.autoPlay, R.string.autoPlayDefault);
@@ -100,7 +100,7 @@ public class GUIHandler { //TODO is there any reason this isn't abstract?
 	public int msg_frames = 0;
 	public int combo_frames = 0;
 	public int msg_r, msg_g, msg_b;
-	private boolean msg_frozen = false;
+	private final boolean msg_frozen = false;
 	
 	public int scoreboard_frames = -1;
 	
