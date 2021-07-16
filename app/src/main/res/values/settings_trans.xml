@@ -28,7 +28,7 @@
   <string name="filebrowserCategoryTitle">"Song Browsing"</string>
   <string name="debuggingCategoryTitle">"Debugging"</string>
   <string name="websiteTitle">"Website"</string>
-  <string name="websiteDesc">"Read the latest updates at Beats\' official website http://beatsportable.com"</string>
+  <string name="websiteDesc">"Old Official Website: http://beatsportable.com"</string>
   <string name="forumsTitle">"Forums"</string>
   <string name="forumsDesc">"Discussion and support forums for Beats"</string>
   <string name="tutorialTitle">"Tutorial"</string>
@@ -47,6 +47,8 @@
   <string name="difficultyLevelDesc">"Default difficulty level of song"</string>
   <string name="speedMultiplierTitle">"Speed"</string>
   <string name="speedMultiplierDesc">"Falling speed of notes"</string>
+  <string name="bpmMultiplierTitle">"Multiplier"</string>
+  <string name="bpmMultiplierDesc">"Speed up notes by multiplier eg: x1.5"</string>
   <string name="gameModeTitle">"Game Mode"</string>
   <string name="gameModeDesc">"Mode of displaying notes"</string>
   <string name="noteAppearanceTitle">"Appearance"</string>
@@ -54,7 +56,7 @@
   <string name="darkTitle">"Dark"</string>
   <string name="darkDesc">"Hide tap arrows"</string>
   <string name="colorHoldsTitle">"Color Holds"</string>
-  <string name="colorHoldsDesc">"Use a solid color for holds. Increases framerate at the cost of looking terrible."</string>
+  <string name="colorHoldsDesc">"Use a solid color for holds. Increases framerate at the cost of looking terrible"</string>
   <string name="holdsTitle">"Holds"</string>
   <string name="holdsDesc">"Notes that have to be held down"</string>
   <string name="jumpsTitle">"Jumps"</string>

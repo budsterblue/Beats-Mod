@@ -3,7 +3,7 @@
   <string name="App_description">"Beats is a music rhythm game where you tap to the beat of the music of installed song packs."</string>
   <string name="Menu_start">" start "</string>
   <string name="Menu_select_song">" select song "</string>
-  <string name="Menu_download_songs">" download songs "</string>
+  <string name="Menu_download_songs">" add songpacks "</string>
   <string name="Menu_settings">" settings "</string>
   <string name="Menu_exit">" exit "</string>
   <string name="Menu_auto">" auto "</string>
@@ -91,11 +91,11 @@
   <string name="ToolsUnzipper_error_no_stepfiles">"No stepfiles found in pack."</string>
   <string name="ToolsUnzipper_installed_to">"\ninstalled to:\n"</string>
   <string name="ToolsUnzipper_installing">"Installing song pack:\n"</string>
-  <string name="ToolsUnzipper_please_wait">"\nPlease wait patiently..."</string>
+  <string name="ToolsUnzipper_please_wait">"\nPlease wait patiently…"</string>
   <string name="ToolsUnzipperActivity_install">"Install: "</string>
   <string name="ToolsUnzipperActivity_unsupported">"Error: Unsupported install source. Beats installer only supports .zip and .smzip files."</string>
-  <string name="ToolsSampleInstaller_installing">"Extracting sample stepfile pack, please wait..."</string>
-  <string name="ToolsSampleInstaller_graphics">"Extracting default graphics, please wait..."</string>
+  <string name="ToolsSampleInstaller_installing">"Extracting sample stepfile pack, please wait…"</string>
+  <string name="ToolsSampleInstaller_graphics">"Extracting default graphics, please wait…"</string>
   <string name="MenuFilechooser_list_error">"Error: Unable to list files in directory:\n"</string>
   <string name="MenuFilechooser_url_error">"Error: Invalid internet shortcut, unable to determine linked url."</string>
   <string name="MenuFilechooser_up_dir">".. [up one directory]"</string>
@@ -103,7 +103,7 @@
   <string name="MenuFilechooser_start_info">"\n\nPress \"MENU\" (phone) to change difficulty\nPress \"START\" to play the song"</string>
   <string name="MenuFilechooser_music_error">"Error: Unable to find music file:\n"</string>
   <string name="MenuFilechooser_music_error_stepfile">"\nfor stepfile file:\n"</string>
-  <string name="MenuFilechooser_file_extension_error">"Error: Unable to match file extension with any available file handlers... this shouldn\'t happen... O_o"</string>
+  <string name="MenuFilechooser_file_extension_error">"Error: Unable to match file extension with any available file handlers… this shouldn\'t happen… O_o"</string>
   <string name="MenuFilechooser_file_options">"File Options"</string>
   <string name="MenuFilechooser_file_open">"Open"</string>
   <string name="MenuFilechooser_file_open_error">"Error: Unable to open file:\n"</string>
@@ -136,7 +136,7 @@
   <string name="GUIGame_done_complete_2">"to the main menu"</string>
   <string name="GUIGame_done_good_1">"Press BACK and try a"</string>
   <string name="GUIGame_done_good_2">"harder difficulty level"</string>
-  <string name="GUIGame_nextFrame_error">"Error: nextFrame() failed...\n"</string>
+  <string name="GUIGame_nextFrame_error">"Error: nextFrame() failed…\n"</string>
   <string name="GUIGame_exiting">"EXITING"</string>
   <string name="GUIGame_paused">"PAUSED"</string>
   <string name="GUIGame_resumed">"RESUMED"</string>

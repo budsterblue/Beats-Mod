@@ -16,6 +16,11 @@
     <item>Hard</item>
     <item>Challenge</item>
   </string-array>
+  <string-array name="hardwareAcceleration">
+    <item>SurfaceView (Software)</item>
+    <item>SurfaceView (Hardware) (for >= Android Oreo)</item>
+    <item>View (Hardware)</item>
+  </string-array>
   <string-array name="randomize">
     <item>Off</item>
     <item>Static</item>
@@ -24,8 +29,6 @@
   <string-array name="gameMode">
     <item>Reverse/Down</item>
     <item>Standard/Up</item>
-    <item>osu! Mod</item>
-    <item>osu! Mod Rand</item>
   </string-array>
   <string-array name="noteskin">
     <item>Default</item>

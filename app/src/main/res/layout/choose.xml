@@ -22,6 +22,6 @@
     	android:layout_marginBottom="5dip"
     	android:layout_marginLeft="10dip"
     	android:text="@+id/textview"
-		android:background="#FAFAFA"
+		android:background="#FFFFFF"
 />
 </RelativeLayout>

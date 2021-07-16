@@ -2,12 +2,12 @@
 <resources>
 
 <!-- Placed here for easy updating -->
-<string name="App_version">"1.7.5b MOD"</string>
+<string name="App_version" translatable="false">"2.0.0"</string>
 
 <!-- MenuHome -->
-<string name="MenuHome_new_user_notes">
+<string name="MenuHome_new_user_notes" translatable="false">
 "~ What is Beats\? ~
-Thank you for downloading the beta release of Beats. \"Beats, Advanced Rhythm Game\" is a music-based rhythm game for Google Android phones/devices. Press arrows to the beat of songs StepMania/DDR style or tap circles osu!/Ouendan style! Similar to Dance Dance Revolution (DDR), Beatmania IIDX, DJ Max, Tap Tap Revenge, Osu! Tatakae! Ouendan, Elite Beat Agents, Project DIVA, etc.
+Thank you for downloading the beta release of Beats. \"Beats, Advanced Rhythm Game\" is a music-based rhythm game for Google Android phones/devices. Press arrows to the beat of songs StepMania/DDR style! Similar to Dance Dance Revolution (DDR), Beatmania IIDX, DJ Max, Tap Tap Revenge, Project DIVA, etc.
 
 Like most rhythm games, Beats has a VERY steep learning curve. New players may want to change the default difficulty from \"Medium\" to \"Easy\". Some downloaded songs are only meant for hardcore StepMania/osu! players.
 
@@ -33,25 +33,6 @@ If you encounter any major bugs or have suggestions, please visit BeatsPortable 
 Enjoy the beta release!
 
 ~Keripo
-"
-</string>
-<string name="MenuHome_release_notes">
-"This is the final major version of Beats 1.x.
-No new major features will be added apart from periodic bugfixes.
-The open source code can be found at https://github.com/Keripo/Beats
-Future development will continue with the open source \"Beats2\" project.
-See http://beatsportable.com for the latest updates.
-
-Beats 1.7.5b FINAL - [6808bdf]
-- add basic AmazonTV remote/controller support
-- add more speed multiplier options
-- remove AdMob (no more ads, yay!)
-- fix a few crashes (Android 2.2 users should upgrade their phones...)
-
-~Keripo
-
-Disclaimer:
-This beta release is for use as is, no warrantees expressed or implied. We are not responsible for any damage that may result from usage of this app. Information may be collected via Localytics for feature testing and feedback purposes.
 "
 </string>
 
