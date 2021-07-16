@@ -1,16 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "28.0.3"
+    compileSdkVersion 30
 
     defaultConfig {
-        applicationId "com.beatsportable.beats"
-        minSdkVersion 23
-        targetSdkVersion 26
+        applicationId "com.github.budsterblue.beats"
+        minSdkVersion 19
+        targetSdkVersion 30
         compileOptions {
-            sourceCompatibility JavaVersion.VERSION_1_6
-            targetCompatibility JavaVersion.VERSION_1_6
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
         }
     }
 
@@ -26,6 +25,9 @@ android {
 }
 
 dependencies {
-    implementation files('libs/UHL.jar')
-    implementation 'com.android.support:support-compat:26.1.0'
+    implementation 'androidx.annotation:annotation:1.2.0'
+    implementation 'androidx.preference:preference:1.1.1'
+}
+repositories {
+    mavenCentral()
 }
