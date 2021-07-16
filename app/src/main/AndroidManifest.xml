@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	package="com.beatsportable.beats"
-	android:versionCode="21"
+	xmlns:tools="http://schemas.android.com/tools"
+	package="com.github.budsterblue.beats"
+	android:versionCode="22"
 	android:versionName="@string/App_version"
 	android:installLocation="auto">
 	<uses-permission android:name="android.permission.VIBRATE"/> <!-- Game -->
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/> <!-- Updates -->
 	<application
 		android:enabled="true"
 		android:allowBackup="true"
@@ -15,14 +15,15 @@
 		android:label="@string/App_name"
 		android:description="@string/App_description">
 		<activity
-			android:name=".MenuHome">
+			android:name="com.github.budsterblue.beats.MenuHome"
+			tools:ignore="AppLinkUrlError">
 			<intent-filter>
 				<action	android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
 		<activity
-			android:name=".ToolsDownloader"
+			android:name="com.github.budsterblue.beats.ToolsDownloader"
 			android:configChanges="orientation|keyboardHidden|screenSize">
 			<!--
 				Most websites report .smzip files as of MIME type application/octet-stream
@@ -41,79 +42,20 @@
 			</intent-filter>
 		</activity>
 		<activity
-			android:name=".ToolsUnzipperActivity"
-			android:configChanges="orientation|keyboardHidden|screenSize">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-				<action android:name="android.intent.action.VIEW"/>
-				<category android:name="android.intent.category.DEFAULT" />
-				<category android:name="android.intent.category.BROWSABLE" />
-				<data
-					android:mimeType="application/zip"
-				/>
-			</intent-filter>
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-				<action android:name="android.intent.action.VIEW"/>
-				<category android:name="android.intent.category.DEFAULT" />
-				<category android:name="android.intent.category.BROWSABLE" />
-				<data
-					android:mimeType="application/octet-stream"
-				/>
-			</intent-filter>
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-				<action android:name="android.intent.action.VIEW"/>
-				<category android:name="android.intent.category.DEFAULT" />
-				<category android:name="android.intent.category.BROWSABLE" />
-				<data
-					android:mimeType="application/download"
-				/>
-			</intent-filter>
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-				<action android:name="android.intent.action.VIEW"/>
-				<category android:name="android.intent.category.DEFAULT" />
-				<category android:name="android.intent.category.BROWSABLE" />
-				<data
-					android:mimeType="*/*"
-					android:scheme="file"
-					android:host="*"
-					android:pathPattern=".*\\.smzip"
-				/>
-				<data
-					android:mimeType="*/*"
-					android:scheme="file"
-					android:host="*"
-					android:pathPattern=".*\\.zip"
-				/>
-				<data
-					android:mimeType="*/*"
-					android:scheme="file"
-					android:host="*"
-					android:pathPattern=".*\\.osz"
-				/>
-				<data
-					android:mimeType="*/*"
-					android:scheme="file"
-					android:host="*"
-					android:pathPattern=".*\\.bin"
-				/>
-			</intent-filter>
-		</activity>
-		<activity
-			android:name=".MenuCredits">
+			android:name="com.github.budsterblue.beats.MenuCredits">
 			<intent-filter>
 				<category android:name="android.intent.category.DEFAULT" />
 				<action android:name=".MenuCredits" />
 			</intent-filter>
 		</activity>
 		<activity
-			android:name=".MenuFileChooser"
+			android:name="com.github.budsterblue.beats.MenuFileChooser"
 			android:configChanges="orientation|keyboardHidden|screenSize"/>
-		<activity android:name=".MenuSettings"/>
 		<activity
-			android:name=".GUIGame"
+			android:name="com.github.budsterblue.beats.MenuSettings"
+			android:theme="@style/Theme.AppCompat.DayNight"/>
+		<activity
+			android:name="com.github.budsterblue.beats.GUIGame"
 			android:theme="@style/Theme.NoBackground"
 			android:configChanges="orientation|keyboardHidden|screenSize"
 			android:exported="true"
