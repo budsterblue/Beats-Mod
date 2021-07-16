@@ -1,27 +1,29 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import com.beatsportable.beats.DataNote.NoteType;
-import com.beatsportable.beats.GUIScore.*;
+import android.graphics.Region;
+
+import com.github.budsterblue.beats.DataNote.NoteType;
+import com.github.budsterblue.beats.GUIScore.*;
 
 public class GUIHandlerTap extends GUIHandler {
 	
-	private int[] button_x;
-	private int[] hitbox_left, hitbox_right, hitbox_top, hitbox_bottom;
-	private GUIFallingObject[] object_held; //the object held under button p, or null
-	private GUITapArrow[] arrows;
+	private final int[] button_x;
+	private final int[] hitbox_left, hitbox_right, hitbox_top, hitbox_bottom;
+	private final GUIFallingObject[] object_held; //the object held under button p, or null
+	private final GUITapArrow[] arrows;
 	
-	private int tapboxFading;
-	private double tapboxOverlap;
-	private Rect[] debugTapboxRects;
-	private Paint debugTapboxPaint;
+	private final int tapboxFading;
+	private final double tapboxOverlap;
+	private final Rect[] debugTapboxRects;
+	private final Paint debugTapboxPaint;
 	
-	private boolean dark;
-	private boolean debugTapbox;
+	private final boolean dark;
+	private final boolean debugTapbox;
 	
 	private enum TapboxLayout {
 		D_PAD,
@@ -30,7 +32,7 @@ public class GUIHandlerTap extends GUIHandler {
 		STANDARD,
 		FULLSCREEN
 	};
-	private TapboxLayout tapboxLayout;
+	private final TapboxLayout tapboxLayout;
 	
 	private TapboxLayout getTapboxLayout(String s) {
 		if (s.equals("d-pad")) {
@@ -53,10 +55,10 @@ public class GUIHandlerTap extends GUIHandler {
 		
 		dark = Tools.getBooleanSetting(R.string.dark, R.string.darkDefault);
 		debugTapbox = Tools.getBooleanSetting(R.string.debugTapbox, R.string.debugTapboxDefault);
-		tapboxFading = Integer.valueOf(
+		tapboxFading = Integer.parseInt(
 				Tools.getSetting(R.string.tapboxFading, R.string.tapboxFadingDefault));
 		if (Tools.getBooleanSetting(R.string.jumps, R.string.jumpsDefault)) {
-			tapboxOverlap = Double.valueOf(
+			tapboxOverlap = Double.parseDouble(
 					Tools.getSetting(R.string.tapboxOverlap, R.string.tapboxOverlapDefault));
 		} else {
 			tapboxOverlap = 0;
@@ -189,7 +191,7 @@ public class GUIHandlerTap extends GUIHandler {
 	}
 	
 	//if autoplay is on: the frame at which each pitch key is unpressed
-	private int[] autoPlayKeyUnpress = new int[Tools.PITCHES];
+	private final int[] autoPlayKeyUnpress = new int[Tools.PITCHES];
 	@Override
 	public void nextFrame() throws Exception {
 		
@@ -338,30 +340,30 @@ public class GUIHandlerTap extends GUIHandler {
 			} else if (tapboxLayout.equals(TapboxLayout.STANDARD)) {
 				if (Tools.gameMode == Tools.REVERSE) {
 					tapboxBitmapUnscaled =
-						BitmapFactory.decodeResource(Tools.res, R.drawable.tapbox_standard_down);
+							BitmapFactory.decodeResource(Tools.res, R.drawable.tapbox_standard_down);
 				} else {
 					tapboxBitmapUnscaled =
-						BitmapFactory.decodeResource(Tools.res, R.drawable.tapbox_standard_up);
+							BitmapFactory.decodeResource(Tools.res, R.drawable.tapbox_standard_up);
 				}
 			} else if (tapboxLayout.equals(TapboxLayout.CURVED)) {
 				if (Tools.gameMode == Tools.REVERSE) {
 					tapboxBitmapUnscaled =
-						BitmapFactory.decodeResource(Tools.res, R.drawable.tapbox_curved_down);
+							BitmapFactory.decodeResource(Tools.res, R.drawable.tapbox_curved_down);
 				} else {
 					tapboxBitmapUnscaled =
-						BitmapFactory.decodeResource(Tools.res, R.drawable.tapbox_curved_up);
+							BitmapFactory.decodeResource(Tools.res, R.drawable.tapbox_curved_up);
 				}
 			} else if (tapboxLayout.equals(TapboxLayout.CURVED_R)) {
 				if (Tools.gameMode == Tools.REVERSE) {
 					tapboxBitmapUnscaled =
-						BitmapFactory.decodeResource(Tools.res, R.drawable.tapbox_curved_r_down);
+							BitmapFactory.decodeResource(Tools.res, R.drawable.tapbox_curved_r_down);
 				} else {
 					tapboxBitmapUnscaled =
-						BitmapFactory.decodeResource(Tools.res, R.drawable.tapbox_curved_r_up);
+							BitmapFactory.decodeResource(Tools.res, R.drawable.tapbox_curved_r_up);
 				}
 			} else if (tapboxLayout.equals(TapboxLayout.FULLSCREEN)) {
 				tapboxBitmapUnscaled =
-					BitmapFactory.decodeResource(Tools.res, R.drawable.tapbox_fullscreen);
+						BitmapFactory.decodeResource(Tools.res, R.drawable.tapbox_fullscreen);
 			}
 			
 			tapboxBitmap_y = // Very top
@@ -374,9 +376,9 @@ public class GUIHandlerTap extends GUIHandler {
 				tapboxBitmap_w = Tools.button_w * 5; // 1/2 + 1/2 + 3/2 + 3/2
 			} else {
 				if (tapboxLayout.equals(TapboxLayout.CURVED)) {
-					tapboxBitmap_y += Tools.button_h / 4; // slight downward shift to look nice with tap arrows
+					tapboxBitmap_y += Tools.button_h / 4.0; // slight downward shift to look nice with tap arrows
 				} else if (tapboxLayout.equals(TapboxLayout.CURVED_R)) {
-					tapboxBitmap_y -= Tools.button_h / 4; // slight upward shift to look nice with tap arrows
+					tapboxBitmap_y -= Tools.button_h / 4.0; // slight upward shift to look nice with tap arrows
 				}
 			}
 			
@@ -387,18 +389,14 @@ public class GUIHandlerTap extends GUIHandler {
 						Tools.button_h * 3,
 						true);
 				tapboxBitmapUnscaled.recycle();
-				tapboxBitmapUnscaled = null; // GC
-			} else {
-				tapboxBitmap = null;
 			}
-			
+
 			if (tapboxBitmap != null) {
 				Paint tapboxAlpha = new Paint();
 				tapboxAlpha.setAlpha(Tools.MAX_OPA * tapboxFading / 100);
 				tapboxAlpha.setDither(true); // Needed to avoid grey boxes
 				canvas.drawBitmap(tapboxBitmap, tapboxBitmap_x, tapboxBitmap_y, tapboxAlpha);
 				tapboxBitmap.recycle();
-				tapboxBitmap = null;
 			}
 		}
 		
@@ -417,13 +415,16 @@ public class GUIHandlerTap extends GUIHandler {
 			if (o == null) break;
 			o.draw(drawarea, canvas);
 		}
-		drawarea.setClip_screen(canvas);
+
+		canvas.save();
+		canvas.clipRect(0, 0, Tools.screen_w, Tools.screen_h, Region.Op.INTERSECT);
 				
 		for (int pitch = 0; pitch < Tools.PITCHES; pitch++) {
 			if (!dark || arrows[pitch].clicked) {
 				arrows[pitch].draw(drawarea, canvas);
 			}
 		}
+		canvas.restore();
 	}
 	
 	// returns a bitmap of selected pitches

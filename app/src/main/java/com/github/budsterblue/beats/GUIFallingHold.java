@@ -1,6 +1,6 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
 
-import com.beatsportable.beats.GUIScore.AccuracyTypes;
+import com.github.budsterblue.beats.GUIScore.AccuracyTypes;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -28,15 +28,15 @@ public class GUIFallingHold extends GUIFallingObject {
 		DEAD       // after hold cannot be pressed any more
 	}
 	
-	private int original_starttime;
+	private final int original_starttime;
 	private int time_to_ng; // time at which the hold will be marked dead
-	private boolean clicked;
+	private final boolean clicked;
 	private FallingMode mode = FallingMode.INACTIVE;
 	private boolean hasBeenHit = false;
 	private boolean ok_override = false; // set to true if we're close enough to the end to count an ok
 	public boolean hasStartedVibrating = false;
-	private boolean colorHolds = Tools.getBooleanSetting(R.string.colorHolds, R.string.colorHoldsDefault);
-	private Paint paint = new Paint();
+	private final boolean colorHolds = Tools.getBooleanSetting(R.string.colorHolds, R.string.colorHoldsDefault);
+	private final Paint paint = new Paint();
 
 	GUIFallingHold(DataNote n) {
 		super(n, n.fraction, n.column, n.time, n.time + MAX_HOLD_MS);
@@ -70,26 +70,35 @@ public class GUIFallingHold extends GUIFallingObject {
 		    hold_rect_bottom = start_rect_top + Tools.button_h/2;
 
 		    hold_draw_start = drawarea.timeToY(original_starttime) + Tools.button_h / 2 - holdimg_h;
-		    hold_draw_end = ((end_rect_top > 0) ? end_rect_top : 0) - holdimg_h;
+		    hold_draw_end = (Math.max(end_rect_top, 0)) - holdimg_h;
 		    hold_draw_add = -holdimg_h;
 		} else { //arrows rising up
 		    hold_rect_top = start_rect_top + Tools.button_h/2;
 		    hold_rect_bottom = end_rect_top + Tools.button_h/2;
 
 		    hold_draw_start = drawarea.timeToY(original_starttime) + Tools.button_h / 2;
-		    hold_draw_end = ((end_rect_bottom < win_h) ? end_rect_bottom : win_h);
+		    hold_draw_end = (Math.min(end_rect_bottom, win_h));
 		    hold_draw_add = holdimg_h;
 		}
 
 		//body
 
-		Path path = new Path();
 		//TODO diagonal clip paths for up/down arrows (straight for left/right)
-		path.addRect(rect_left, hold_rect_top, rect_right, hold_rect_bottom, Direction.CCW);
 
-		canvas.clipPath(path, Op.INTERSECT);
+		if (colorHolds) {
+			canvas.drawColor(Color.parseColor("#eeeb01"));
+			drawarea.setClip_arrowSpace(canvas);
+			RectF rectF = new RectF(rect_left, end_rect_top, rect_right, end_rect_bottom);
+			paint.setColor(Color.parseColor("#eeeb01"));
+			canvas.drawArc(rectF, 0F, 180F, true, paint);
+		} else {
+			// wrap with save and restore because: https://stackoverflow.com/questions/50231950/what-is-the-best-alternative-to-canvas-cliprect-with-region-op-replace/50247323
+			canvas.save();
+			drawarea.setClip_arrowSpace(canvas);
+			Path path = new Path();
+			path.addRect(rect_left, hold_rect_top, rect_right, hold_rect_bottom, Direction.CCW);
+			canvas.clipPath(path, Op.INTERSECT);
 
-		if(!colorHolds){
 			//need to swap comparison direction based on motion direction, hence xor
 			for (int y = hold_draw_start; (y <= hold_draw_end) ^ fallingDown; y += hold_draw_add) {
 				canvas.drawBitmap(
@@ -99,6 +108,8 @@ public class GUIFallingHold extends GUIFallingObject {
 						),
 						rect_left, y, null);
 			}
+			canvas.restore();
+			canvas.save();
 			drawarea.setClip_arrowSpace(canvas);
 
 			//end arrow (top)
@@ -109,12 +120,6 @@ public class GUIFallingHold extends GUIFallingObject {
 					),
 					rect_left, end_rect_top, null
 			);
-		} else {
-			canvas.drawColor(Color.parseColor("#eeeb01"));
-			drawarea.setClip_arrowSpace(canvas);
-			RectF rectF = new RectF(rect_left, end_rect_top, rect_right, end_rect_bottom);
-			paint.setColor(Color.parseColor("#eeeb01"));
-			canvas.drawArc(rectF, 0F, 180F, true, paint);
 		}
 
 		//start arrow (bottom)
@@ -126,6 +131,9 @@ public class GUIFallingHold extends GUIFallingObject {
 				rect_left, start_rect_top, null
 				);
 
+		if (!colorHolds) {
+			canvas.restore();
+		}
 		//debug
 		
 		/*Paint p = new Paint();
@@ -196,7 +204,7 @@ public class GUIFallingHold extends GUIFallingObject {
 			return AccuracyTypes.N_MISS;
 		}
 	}
-	
+
 	public static String holdRsrc(FallingMode _mode, boolean end) {
 		if (Tools.gameMode == Tools.REVERSE) {
 			if (end) {
