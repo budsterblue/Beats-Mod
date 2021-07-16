@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/tweaksCategoryTitle">
+        <ListPreference
+            android:defaultValue="@string/healthPenaltyDefault"
+            android:entries="@array/healthPenalty"
+            android:entryValues="@array/healthPenaltyValues"
+            android:key="@string/healthPenalty"
+            android:summary="@string/healthPenaltyDesc"
+            android:title="@string/healthPenaltyTitle" />
+        <ListPreference
+            android:defaultValue="@string/healthMaxDefault"
+            android:entries="@array/healthMax"
+            android:entryValues="@array/healthMaxValues"
+            android:key="@string/healthMax"
+            android:summary="@string/healthMaxDesc"
+            android:title="@string/healthMaxTitle" />
+        <ListPreference
+            android:defaultValue="@string/syncDurationDefault"
+            android:entries="@array/syncDuration"
+            android:entryValues="@array/syncDurationValues"
+            android:key="@string/syncDuration"
+            android:summary="@string/syncDurationDesc"
+            android:title="@string/syncDurationTitle" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/filebrowserCategoryTitle">
+        <ListPreference
+            android:defaultValue="@string/autoStartDefault"
+            android:entries="@array/toggle"
+            android:entryValues="@array/toggleValues"
+            android:key="@string/autoStart"
+            android:summary="@string/autoStartDesc"
+            android:title="@string/autoStartTitle" />
+        <ListPreference
+            android:defaultValue="@string/useShortDirNamesDefault"
+            android:entries="@array/toggle"
+            android:entryValues="@array/toggleValues"
+            android:key="@string/useShortDirNames"
+            android:summary="@string/useShortDirNamesDesc"
+            android:title="@string/useShortDirNamesTitle" />
+        <ListPreference
+            android:defaultValue="@string/showSongBannersDefault"
+            android:entries="@array/toggle"
+            android:entryValues="@array/toggleValues"
+            android:key="@string/showSongBanners"
+            android:summary="@string/showSongBannersDesc"
+            android:title="@string/showSongBannersTitle" />
+        <ListPreference
+            android:defaultValue="@string/stepfileFolderCheckDefault"
+            android:entries="@array/toggle"
+            android:entryValues="@array/toggleValues"
+            android:key="@string/stepfileFolderCheck"
+            android:summary="@string/stepfileFolderCheckDesc"
+            android:title="@string/stepfileFolderCheckTitle" />
+        <ListPreference
+            android:defaultValue="@string/installSamplesDefault"
+            android:entries="@array/toggle"
+            android:entryValues="@array/toggleValues"
+            android:key="@string/installSamples"
+            android:summary="@string/installSamplesDesc"
+            android:title="@string/installSamplesTitle" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/debuggingCategoryTitle">
+        <ListPreference
+            android:defaultValue="@string/betaNotesDefault"
+            android:entries="@array/toggle"
+            android:entryValues="@array/toggleValues"
+            android:key="@string/App_version"
+            android:summary="@string/betaNotesDesc"
+            android:title="@string/betaNotesTitle" />
+        <ListPreference
+            android:defaultValue="@string/debugTimeDefault"
+            android:entries="@array/toggle"
+            android:entryValues="@array/toggleValues"
+            android:key="@string/debugTime"
+            android:summary="@string/debugTimeDesc"
+            android:title="@string/debugTimeTitle" />
+        <ListPreference
+            android:defaultValue="@string/debugLogCatDefault"
+            android:entries="@array/toggle"
+            android:entryValues="@array/toggleValues"
+            android:key="@string/debugLogCat"
+            android:summary="@string/debugLogCatDesc"
+            android:title="@string/debugLogCatTitle" />
+        <ListPreference
+            android:defaultValue="@string/debugTapboxDefault"
+            android:entries="@array/toggle"
+            android:entryValues="@array/toggleValues"
+            android:key="@string/debugTapbox"
+            android:summary="@string/debugTapboxDesc"
+            android:title="@string/debugTapboxTitle" />
+    </PreferenceCategory>
+</PreferenceScreen>

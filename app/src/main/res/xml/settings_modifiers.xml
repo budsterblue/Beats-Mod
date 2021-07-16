@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/gameplayCategoryTitle">
+        <ListPreference
+            android:defaultValue="@string/autoPlayDefault"
+            android:entries="@array/toggle"
+            android:entryValues="@array/toggleValues"
+            android:key="@string/autoPlay"
+            android:summary="@string/autoPlayDesc"
+            android:title="@string/autoPlayTitle" />
+        <ListPreference
+            android:defaultValue="@string/darkDefault"
+            android:entries="@array/toggle"
+            android:entryValues="@array/toggleValues"
+            android:key="@string/dark"
+            android:summary="@string/darkDesc"
+            android:title="@string/darkTitle" />
+        <ListPreference
+            android:defaultValue="@string/noteAppearanceDefault"
+            android:entries="@array/noteAppearance"
+            android:entryValues="@array/noteAppearanceValues"
+            android:key="@string/noteAppearance"
+            android:summary="@string/noteAppearanceDesc"
+            android:title="@string/noteAppearanceTitle" />
+        <ListPreference
+            android:defaultValue="@string/colorHoldsDefault"
+            android:entries="@array/toggle"
+            android:entryValues="@array/toggleValues"
+            android:key="@string/colorHolds"
+            android:summary="@string/colorHoldsDesc"
+            android:title="@string/colorHoldsTitle" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/notesCategoryTitle">
+        <ListPreference
+            android:defaultValue="@string/holdsDefault"
+            android:entries="@array/toggle"
+            android:entryValues="@array/toggleValues"
+            android:key="@string/holds"
+            android:summary="@string/holdsDesc"
+            android:title="@string/holdsTitle" />
+        <ListPreference
+            android:defaultValue="@string/jumpsDefault"
+            android:entries="@array/toggle"
+            android:entryValues="@array/toggleValues"
+            android:key="@string/jumps"
+            android:summary="@string/jumpsDesc"
+            android:title="@string/jumpsTitle" />
+        <ListPreference
+            android:defaultValue="@string/randomizeDefault"
+            android:entries="@array/randomize"
+            android:entryValues="@array/randomizeValues"
+            android:key="@string/randomize"
+            android:summary="@string/randomizeDesc"
+            android:title="@string/randomizeTitle" />
+    </PreferenceCategory>
+</PreferenceScreen>
