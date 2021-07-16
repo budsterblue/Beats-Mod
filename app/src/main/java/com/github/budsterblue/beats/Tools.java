@@ -1,4 +1,4 @@
-package com.beatsportable.beats;
+package com.github.budsterblue.beats;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -6,10 +6,11 @@ import java.io.FileOutputStream;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
@@ -19,11 +20,8 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Environment;
-import android.preference.PreferenceManager;
+import androidx.preference.PreferenceManager;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -62,11 +60,8 @@ public class Tools {
 	
 	public static final int REVERSE = 0;
 	public static final int STANDARD = 1;
-	public static final int OSU_MOD = 2;
 	// Just turn on osu_rand and set to osu_mod
-	private static final int OSU_MOD_RAND = 3;
 	public static int gameMode;
-	public static boolean randomizeBeatmap; // for osu!
 	
 	public static void setContext(Activity activityContext) {
 		c = activityContext;
@@ -79,36 +74,26 @@ public class Tools {
 	
 	public static void updateGameMode() {
 		gameMode = Integer.parseInt(getSetting(R.string.gameMode, R.string.gameModeDefault));
-		if (gameMode == OSU_MOD_RAND) {
-			randomizeBeatmap = true;
-			gameMode = OSU_MOD;
-		} else {
-			randomizeBeatmap = false;
-		}
 	}
-	
-	public static void setTopbarHeight() {
+
+	public static void setTopbarHeight(Activity a) {
 		Rect rect= new Rect();
-		Window window = c.getWindow();
+		Window window = a.getWindow();
 		window.getDecorView().getWindowVisibleDisplayFrame(rect);
 		statusBarHeight = rect.top;
-		/*
-		int contentViewTop = window.findViewById(Window.ID_ANDROID_CONTENT).getTop();
-		titleBarHeight = contentViewTop - statusBarHeight;
-		*/
-
 	}
-	
-	@SuppressWarnings("deprecation")
+
 	public static void setScreenDimensions() {
-		Display display = c.getWindow().getWindowManager().getDefaultDisplay();
-		screen_w = display.getWidth();
-		screen_h = display.getHeight();
-		screen_s = (screen_h > screen_w) ? screen_w : screen_h;
-		if (!settings.getString(
+		//Display display = c.getWindow().getWindowManager().getDefaultDisplay();
+		//screen_w = display.getWidth();
+		screen_w = Resources.getSystem().getDisplayMetrics().widthPixels;
+		screen_h = Resources.getSystem().getDisplayMetrics().heightPixels;
+		//screen_h = display.getHeight();
+		screen_s = Math.min(screen_h, screen_w);
+		if (!Objects.equals(settings.getString(
 				res.getString(R.string.fullscreen),
 				res.getString(R.string.fullscreenDefault)
-				).equals("1")) {
+		), "1")) {
 			screen_h -= statusBarHeight;
 		}
 		int screen_size = c.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK;
@@ -192,12 +177,12 @@ public class Tools {
 			return null;
 		}
 		// Favour .sm files before .dwi files
-		for (File f : dir.listFiles()) {
+		for (File f : Objects.requireNonNull(dir.listFiles())) {
 			if (Tools.isSMFile(f.getPath())) {
 				return f.getPath();
 			}
 		}
-		for (File f : dir.listFiles()) {
+		for (File f : Objects.requireNonNull(dir.listFiles())) {
 			if (Tools.isDWIFile(f.getPath())) {
 				return f.getPath();
 			}
@@ -212,11 +197,11 @@ public class Tools {
 	public static String getSetting(int key, int defValue) {
 		return settings.getString(res.getString(key), res.getString(defValue));
 	}
-	
+
 	public static boolean getBooleanSetting(int key, int defValue) {
-		return settings.getString(res.getString(key), res.getString(defValue)).equals("1");
+		return Objects.equals(settings.getString(res.getString(key), res.getString(defValue)), "1");
 	}
-	
+
 	public static void putSetting(int key, String value) {
 		editor.putString(res.getString(key), value);
 		editor.commit();
@@ -267,11 +252,7 @@ public class Tools {
 		debugLogCat(msg);
 	}
 	
-	public static OnClickListener cancel_action = new OnClickListener() {
-		public void onClick(DialogInterface dialog, int id) {
-			dialog.cancel();
-		}
-	};
+	public static OnClickListener cancel_action = (dialog, id) -> dialog.cancel();
 	
 	private static void alert_dialog(
 			String title, int icon, CharSequence msg,
@@ -297,19 +278,17 @@ public class Tools {
 		
 		if (ignoreSetting != -1) {
 			View notes = LayoutInflater.from(c).inflate(R.layout.notes, null);
-			TextView notes_text = (TextView)notes.findViewById(R.id.notes_text);
+			TextView notes_text = notes.findViewById(R.id.notes_text);
 			notes_text.setText(msg);
 			notes_text.setTextColor(Color.WHITE);
 			if (msg.length() < 300) notes_text.setTextSize(16); // Normal size?
 			
-			CheckBox checkbox = (CheckBox)notes.findViewById(R.id.checkbox);
-			View.OnClickListener ignoreCheck = new View.OnClickListener() {
-				public void onClick(View v) {
-					if (((CheckBox) v).isChecked()) {
-						Tools.putSetting(ignoreSetting, "1");
-					} else {
-						Tools.putSetting(ignoreSetting, "0");
-					}
+			CheckBox checkbox = notes.findViewById(R.id.checkbox);
+			View.OnClickListener ignoreCheck = v -> {
+				if (((CheckBox) v).isChecked()) {
+					Tools.putSetting(ignoreSetting, "1");
+				} else {
+					Tools.putSetting(ignoreSetting, "0");
 				}
 			};
 			if (checked) {
@@ -401,187 +380,77 @@ public class Tools {
 				-1
 				);
 	}
-	
-	public static boolean isMediaMounted() {
-		if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-			return true;
-		} else {
-			Tools.toast(
-					res.getString(R.string.Tools_mount_error) +
-					res.getString(R.string.Tools_usb_error)
-					);
-			return false;
-		}
-	}
-	
-	public static boolean makeBeatsDir() {
-		try {
-			String dir = 
-				Environment.getExternalStorageDirectory() + 
-				res.getString(R.string.Tools_path_beats)
-				;
-			File beats = new File(dir);
-			File songs = new File(dir + res.getString(R.string.Tools_path_songs));
-			File nomedia = new File(dir + res.getString(R.string.Tools_path_nomedia));
-			if (beats.isFile()) {
-				if (!beats.delete()) {
-					Tools.toast(
-							res.getString(R.string.Tools_unable_delete_file) + 
-							beats.getPath() + 
-							res.getString(R.string.Tools_permissions_error)
-							);
-					return false;
-				}
-			}
-			if (!beats.exists()) {
-				if (!beats.mkdirs()) {
-					Tools.toast(
-							res.getString(R.string.Tools_unable_create_dir) + 
-							beats.getPath() + 
-							res.getString(R.string.Tools_permissions_error)
-							);
-					return false;
-				}
-			}
-			if (!songs.exists()) {
-				if (!songs.mkdirs()) {
-					Tools.toast(
-							res.getString(R.string.Tools_unable_create_dir) +
-							songs.getPath() + 
-							res.getString(R.string.Tools_permissions_error)
-							);
-					return false;
-				}
-			}
-			if (!nomedia.exists()) {
-				if (!nomedia.createNewFile()) {
-					Tools.toast(
-							res.getString(R.string.Tools_unable_create_file) +
-							nomedia.getPath() + 
-							res.getString(R.string.Tools_permissions_error)
-							);
-					return false;
-				}
-			}
-		} catch (Exception e) {
-			Tools.toast("Error: " + e.getMessage());
-			ToolsTracker.error("Tools.makeBeatsDir", e, c.getLocalClassName());
-			return false;
-		}
-		return true;
-	}
-	
+
 	public static String getBeatsDir() {
-		if (!isMediaMounted()) {
-			Tools.toast(
-					res.getString(R.string.Tools_mount_error) +
-					res.getString(R.string.Tools_usb_error)
-					);
-			return null;
-		} else {
-			String path =
-				Environment.getExternalStorageDirectory() + 
-				res.getString(R.string.Tools_path_beats)
-				;
-			File f = new File(path);
-			if (f.exists() && f.isDirectory()) {
-				return path;
-			} else if (makeBeatsDir()) {
-				return path;
-			}
-			return null;
-		}
+		return c.getFilesDir().getPath();
 	}
 	public static String getSongsDir() {
-		String path = null;
-		if ((path = getBeatsDir()) != null) {
-			path += res.getString(R.string.Tools_path_songs);
-		}
-		return path;
+		return getBeatsDir() + res.getString(R.string.Tools_path_songs);
 	}
 	public static String getSinglesDir() {
-		String path = null;
-		if ((path = getSongsDir()) != null) {
-			path += res.getString(R.string.Tools_path_singles);
-		}
-		return path;
+		return getSongsDir() + res.getString(R.string.Tools_path_singles);
 	}
 	public static String getScreenshotsDir() {
-		String path = null;
-		if ((path = getBeatsDir()) != null) {
-			path += res.getString(R.string.Tools_path_screenshots);
-		}
-		return path;
+		return getBeatsDir() + res.getString(R.string.Tools_path_screenshots);
 	}
 	public static String getNoteSkinsDir() {
-		String path = null;
-		if ((path = getBeatsDir()) != null) {
-			path += res.getString(R.string.Tools_path_noteskins);
-			String noteskin = getSetting(R.string.noteskin, R.string.noteskinDefault);
-			if (noteskin.equals("default")) {
+		String path = getBeatsDir() + res.getString(R.string.Tools_path_noteskins);
+		String noteskin = getSetting(R.string.noteskin, R.string.noteskinDefault);
+		switch (noteskin) {
+			case "default":
 				path += "/default";
-			} else if (noteskin.equals("original")) {
+				break;
+			case "original":
 				path += "/original";
-			} else if (noteskin.equals("custom")) {
+				break;
+			case "custom":
 				path += "/custom";
-			} else {
+				break;
+			default:
 				path += "/default";
-			}
+				break;
 		}
 		return path;
 	}
 	public static String getNoteSkinsDirDefault() {
-		String path = null;
-		if ((path = getBeatsDir()) != null) {
-			path += res.getString(R.string.Tools_path_noteskins);
-			path += "/default";
-		}
-		return path;
+		return getBeatsDir() + res.getString(R.string.Tools_path_noteskins) + "/default";
 	}
 	public static String getBackgroundsDir() {
-		String path = null;
-		if ((path = getBeatsDir()) != null) {
-			path += res.getString(R.string.Tools_path_backgrounds);
-		}
-		return path;
+		return getBeatsDir() + res.getString(R.string.Tools_path_backgrounds);
 	}
 	public static String getBackgroundRes() {
-		String path = "";
-		path += getBackgroundsDir();
+		String path = getBackgroundsDir();
 		String bgImage = getSetting(R.string.backgroundImage, R.string.backgroundImageDefault);
-		if (bgImage.equals("blue")) {
-			path += "/bg_blue.jpg";
-		} else if (bgImage.equals("red")) {
-			path += "/bg_red.jpg";
-		} else if (bgImage.equals("white")) {
-			path += "/bg_white.jpg";
-		} else {
-			path += "/bg_blue.jpg";
+		switch (bgImage) {
+			case "blue":
+				path += "/bg_blue.jpg";
+				break;
+			case "red":
+				path += "/bg_red.jpg";
+				break;
+			case "white":
+				path += "/bg_white.jpg";
+				break;
+			default:
+				path += "/bg_blue.jpg";
+				break;
 		}
 		return path;
 	}
-	
-	private static SimpleDateFormat screenshotFormat = new SimpleDateFormat("yyyy'-'MM'-'dd'-'HHmmssSSS' '");
-	public static void takeScreenshot(View view, String songTitle) {
-		view.setDrawingCacheEnabled(true);
-		view.buildDrawingCache();
-		Bitmap b = view.getDrawingCache();
-		takeScreenshot(b, songTitle);
-	}
+
+	@SuppressLint("SimpleDateFormat")
+	private static final SimpleDateFormat screenshotFormat = new SimpleDateFormat("yyyy'-'MM'-'dd'-'HHmmssSSS' '");
+
 	public static void takeScreenshot(Bitmap b, String songTitle) {
 		try {
 			String screenshotDir = getScreenshotsDir();
-			if (screenshotDir != null) {
-				File dir = new File(screenshotDir);
-				if (!dir.exists()) dir.mkdirs();
-				String path = screenshotDir + "/" + screenshotFormat.format(new Date()) + songTitle + ".png";
-				FileOutputStream fos = new FileOutputStream(path);
-				if (fos != null) {
-					b.compress(Bitmap.CompressFormat.PNG, 100, fos); // PNG is lossless 
-					fos.close();
-				}
-				Tools.toast(Tools.getString(R.string.Tools_screenshot_saved) + path);
-			}
+			File dir = new File(screenshotDir);
+			if (!dir.exists()) dir.mkdirs();
+			String path = screenshotDir + "/" + screenshotFormat.format(new Date()) + songTitle + ".png";
+			FileOutputStream fos = new FileOutputStream(path);
+			b.compress(Bitmap.CompressFormat.PNG, 100, fos); // PNG is lossless
+			fos.close();
+			Tools.toast(Tools.getString(R.string.Tools_screenshot_saved) + path);
 		} catch (Exception e) {
 			ToolsTracker.error("Tools.takeScreenshot", e, e.getMessage());
 		}
@@ -589,17 +458,14 @@ public class Tools {
 	
 	public static void installSampleSongs(Activity a) {
 		String beatsPath = getBeatsDir();
-		if (beatsPath != null) {
-			String samplePath = 
-				beatsPath + "/" + 
-				res.getString(R.string.Tools_sample_zip)
-				;
-			new ToolsSampleInstaller(
-					a, samplePath, R.raw.samples, R.string.ToolsSampleInstaller_installing
-					).extract();
-		}
+		String samplePath =
+			beatsPath + "/" +
+			res.getString(R.string.Tools_sample_zip);
+		new ToolsSampleInstaller(
+				a, samplePath, R.raw.samples, R.string.ToolsSampleInstaller_installing
+				).extract();
 	}
-	
+
 	/*
 	public static void installGraphics(Activity a) {
 		String beatsPath = getBeatsDir();
@@ -634,11 +500,11 @@ public class Tools {
 	public static String getMD5Checksum(String filename) {
 		try {
 			byte[] b = createChecksum(filename);
-			String result = "";
-			for (int i=0; i < b.length; i++) {
-			result += Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);
+			StringBuilder result = new StringBuilder();
+			for (byte value : b) {
+				result.append(Integer.toString((value & 0xff) + 0x100, 16).substring(1));
 			}
-			return result;
+			return result.toString();
 		} catch (Exception e) {
 			ToolsTracker.error("Tools.getMD5Checksum", e, c.getLocalClassName());
 			return null;
