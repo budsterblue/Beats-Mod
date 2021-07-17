@@ -34,7 +34,7 @@ public class MenuFileArrayAdapter extends ArrayAdapter<MenuFileItem>{
 		return items.get(i); 
 	} 
 	
-	@androidx.annotation.NonNull
+	@NonNull
 	public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 		View v = convertView;
 		if (v == null) {

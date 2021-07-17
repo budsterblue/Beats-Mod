@@ -61,7 +61,7 @@ public class GUIHandler { //TODO is there any reason this isn't abstract?
 		done = true;
 		fallingobjects.clearArrays();
 		score.updateHighScore(autoPlay);
-		System.gc();
+		//System.gc();
 	}
 	
 	public void pauseVibrator() {

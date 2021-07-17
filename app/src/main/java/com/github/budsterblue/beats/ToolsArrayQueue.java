@@ -104,7 +104,7 @@ public class ToolsArrayQueue<T> extends AbstractQueue<T> {
 	@SuppressWarnings("unchecked")
 	@NonNull
 	@Override
-	public <U> U[] toArray(@androidx.annotation.NonNull U[] a) {
+	public <U> U[] toArray(@NonNull U[] a) {
 		int size = size();
 		a = (size <= a.length) ? a : (U[]) new Object[size];
 		arraycopy(a, 0);

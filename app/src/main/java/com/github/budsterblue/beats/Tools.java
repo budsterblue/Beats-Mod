@@ -35,8 +35,7 @@ public class Tools {
 	public static Resources res = null;
 	private static SharedPreferences settings = null;
 	private static SharedPreferences.Editor editor = null;
-	
-	public static boolean disabledBackgroundData = false;
+
 	public static boolean tablet = false;
 	public static int screen_w = 0;
 	public static int screen_h = 0;

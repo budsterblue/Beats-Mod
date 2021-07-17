@@ -133,11 +133,11 @@ public class MenuHome extends Activity {
 					bg.setImageBitmap(newBackground);
 				}
 			} catch (Throwable t) {
-				System.gc();
+				//System.gc();
 				ToolsTracker.error("MenuHome.updateLayout", t, "");
 				Tools.toast_long(Tools.getString(R.string.MenuHome_background_image_load_fail));
 			}
-			System.gc();
+			//System.gc();
 		}
 	}
 	
