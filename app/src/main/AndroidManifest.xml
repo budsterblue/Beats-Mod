@@ -13,32 +13,13 @@
 		android:hardwareAccelerated="true"
 		android:icon="@drawable/icon"
 		android:label="@string/App_name"
-		android:description="@string/App_description">
+		android:description="@string/App_description"
+		android:theme="@style/Theme.AppCompat.DayNight" >
 		<activity
-			android:name="com.github.budsterblue.beats.MenuHome"
-			tools:ignore="AppLinkUrlError">
+			android:name="com.github.budsterblue.beats.MenuHome" >
 			<intent-filter>
 				<action	android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
-			</intent-filter>
-		</activity>
-		<activity
-			android:name="com.github.budsterblue.beats.ToolsDownloader"
-			android:configChanges="orientation|keyboardHidden|screenSize">
-			<!--
-				Most websites report .smzip files as of MIME type application/octet-stream
-				so the only real way to handle them would be to directly download the files
-				within Beats, then proceed to installing them.
-			 -->
-			<intent-filter>
-				<action android:name="android.intent.action.VIEW"/>
-				<category android:name="android.intent.category.DEFAULT" />
-				<category android:name="android.intent.category.BROWSABLE" />
-					<data
-						android:scheme="http"
-						android:host="*"
-						android:pathPattern=".*\\.smzip"
-					/>
 			</intent-filter>
 		</activity>
 		<activity
@@ -50,10 +31,9 @@
 		</activity>
 		<activity
 			android:name="com.github.budsterblue.beats.MenuFileChooser"
-			android:configChanges="orientation|keyboardHidden|screenSize"/>
+			android:configChanges="orientation|keyboardHidden|screenSize" />
 		<activity
-			android:name="com.github.budsterblue.beats.MenuSettings"
-			android:theme="@style/Theme.AppCompat.DayNight"/>
+			android:name="com.github.budsterblue.beats.MenuSettings" />
 		<activity
 			android:name="com.github.budsterblue.beats.GUIGame"
 			android:theme="@style/Theme.NoBackground"
