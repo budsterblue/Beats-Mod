@@ -1,10 +1,14 @@
 package com.github.budsterblue.beats;
 
-import java.io.File;
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 
-import android.app.*;
-import android.content.*;
-import android.os.*;
+import java.io.File;
 
 public class MenuStartGame implements Runnable {
 	private final Activity a;

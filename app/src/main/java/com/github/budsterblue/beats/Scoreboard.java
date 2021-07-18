@@ -70,9 +70,9 @@ public class Scoreboard extends SQLiteOpenHelper implements Runnable {
 	}
 
 	public void run() {
-		try {
-			Thread.sleep(500);
-		} catch (Exception ignored) {}
+		//try {
+		//	Thread.sleep(500);
+		//} catch (Exception ignored) {}
 		ContentValues inputs = new ContentValues();
 		inputs.put(KEY_MD5, md5);
 		inputs.put(KEY_SCORE, newScore);

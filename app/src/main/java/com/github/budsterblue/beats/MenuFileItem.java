@@ -1,6 +1,7 @@
 package com.github.budsterblue.beats;
 
-import java.io.*;
+
+import java.io.File;
 
 public class MenuFileItem implements Comparable<MenuFileItem>{
 

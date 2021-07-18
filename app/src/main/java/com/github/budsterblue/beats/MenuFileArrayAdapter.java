@@ -10,13 +10,16 @@ import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.view.*;
-import android.widget.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-public class MenuFileArrayAdapter extends ArrayAdapter<MenuFileItem>{
+public class MenuFileArrayAdapter extends ArrayAdapter<MenuFileItem> {
 
 	private final Context c;
 	private final int id;

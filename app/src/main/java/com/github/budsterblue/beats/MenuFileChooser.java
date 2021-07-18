@@ -12,7 +12,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.*;
+import android.widget.ListView;
 
 import java.io.BufferedReader;
 import java.io.File;

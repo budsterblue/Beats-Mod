@@ -8,7 +8,6 @@ import android.graphics.Rect;
 import android.graphics.Region;
 
 import com.github.budsterblue.beats.DataNote.NoteType;
-import com.github.budsterblue.beats.GUIScore.*;
 
 public class GUIHandlerTap extends GUIHandler {
 	
@@ -226,12 +225,12 @@ public class GUIHandlerTap extends GUIHandler {
 				o.onHold(currentTime, score);
 				
 				if (currentTime > o.end_time || o.start_time == o.end_time) {
-					AccuracyTypes acc = o.onLastFrame(currentTime, score, true);
+					GUIScore.AccuracyTypes acc = o.onLastFrame(currentTime, score, true);
 					
-					if (acc != AccuracyTypes.X_IGNORE_ABOVE) {
+					if (acc != GUIScore.AccuracyTypes.X_IGNORE_ABOVE) {
 						setMessage(acc.name, acc.r, acc.g, acc.b);
 					}
-					if (acc == AccuracyTypes.F_NG || acc == AccuracyTypes.F_OK) {
+					if (acc == GUIScore.AccuracyTypes.F_NG || acc == GUIScore.AccuracyTypes.F_OK) {
 						// TODO - vibrate
 						v.endHold();
 					}
@@ -252,12 +251,12 @@ public class GUIHandlerTap extends GUIHandler {
 					
 					fallingobjects.missColumn(pitch);
 					
-					AccuracyTypes acc = o.onMiss(score);
+					GUIScore.AccuracyTypes acc = o.onMiss(score);
 					
-					if (acc == AccuracyTypes.F_NG || acc == AccuracyTypes.F_OK) {
+					if (acc == GUIScore.AccuracyTypes.F_NG || acc == GUIScore.AccuracyTypes.F_OK) {
 						// TODO - vibrate
 						v.endHold();
-					} else if (acc == AccuracyTypes.N_MISS) {
+					} else if (acc == GUIScore.AccuracyTypes.N_MISS) {
 						// TODO - vibrate
 						v.vibrateMiss();
 					}
@@ -470,9 +469,9 @@ public class GUIHandlerTap extends GUIHandler {
 		int currentTime = GUIGame.currentTime;
 		int timediff = o.start_time - currentTime;
 		
-		AccuracyTypes acc = o.onFirstFrame(currentTime, score);
+		GUIScore.AccuracyTypes acc = o.onFirstFrame(currentTime, score);
 		
-		if (acc != AccuracyTypes.X_IGNORE_ABOVE) {
+		if (acc != GUIScore.AccuracyTypes.X_IGNORE_ABOVE) {
 			updateCombo();
 	
 			if (debugTime) {
@@ -519,8 +518,8 @@ public class GUIHandlerTap extends GUIHandler {
 		//button_clicked[pitch] = false;
 		arrows[pitch].clicked = false;
 		if (object_held[pitch] != null) {
-			AccuracyTypes acc = object_held[pitch].onLastFrame(GUIGame.currentTime, score, false);
-			if (acc != AccuracyTypes.X_IGNORE_ABOVE) {
+			GUIScore.AccuracyTypes acc = object_held[pitch].onLastFrame(GUIGame.currentTime, score, false);
+			if (acc != GUIScore.AccuracyTypes.X_IGNORE_ABOVE) {
 				setMessage(acc.name, acc.r, acc.g, acc.b);
 			}
 			object_held[pitch] = null;

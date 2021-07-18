@@ -1,9 +1,18 @@
 package com.github.budsterblue.beats;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.zip.*;
+import java.util.Enumeration;
+import java.util.Objects;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class ToolsPostGenerator {
 
@@ -109,7 +118,7 @@ public class ToolsPostGenerator {
 	
 	// Extraction code from http://java.sun.com/developer/technicalArticles/Programming/compression/
 	private static void extractFile(
-		String path, ZipFile zipfile, BufferedInputStream is, BufferedOutputStream dest, ZipEntry entry) 
+			String path, ZipFile zipfile, BufferedInputStream is, BufferedOutputStream dest, ZipEntry entry)
 		throws IOException
 	{
 		is = new BufferedInputStream(zipfile.getInputStream(entry));
