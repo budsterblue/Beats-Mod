@@ -126,13 +126,13 @@
             android:title="@string/showPercentTitle" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/miscCategoryTitle">
-        <PreferenceScreen
-            android:summary="@string/Menu_download_songs"
-            android:title="@string/Button_download">
+        <Preference
+            android:summary="@string/downloadPacksDesc"
+            android:title="@string/downloadScreenTitle">
             <intent
                 android:action="android.intent.action.VIEW"
                 android:data="@string/Url_downloads" />
-        </PreferenceScreen>
+        </Preference>
         <Preference
             android:fragment="com.github.budsterblue.beats.MenuSettings$MenuSettingsFragmentInfo"
             android:summary="@string/infoScreenDesc"

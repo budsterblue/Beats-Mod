@@ -27,6 +27,8 @@
   <string name="tweaksCategoryTitle">"Tweaks"</string>
   <string name="filebrowserCategoryTitle">"Song Browsing"</string>
   <string name="debuggingCategoryTitle">"Debugging"</string>
+  <string name="downloadScreenTitle">"Download Songpacks"</string>
+  <string name="downloadPacksDesc">"Takes You To Stepmania Online"</string>
   <string name="websiteTitle">"Website"</string>
   <string name="websiteDesc">"Old Official Website: http://beatsportable.com"</string>
   <string name="forumsTitle">"Forums"</string>

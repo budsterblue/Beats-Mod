@@ -103,7 +103,7 @@ public class ToolsUnzipper implements Runnable {
 				Tools.getString(R.string.ToolsUnzipper_install_ask) +
 				filename +
 				Tools.getString(R.string.ToolsUnzipper_install_ask_location) +
-				Tools.getSongsDir(),
+				Tools.getPacksDir(),
 				Tools.getString(R.string.Button_yes),
 				unzip_action,
 				Tools.getString(R.string.Button_no),
@@ -226,7 +226,7 @@ public class ToolsUnzipper implements Runnable {
 					Tools.getString(R.string.ToolsUnzipper_songpack) +
 					filename + 
 					Tools.getString(R.string.ToolsUnzipper_installed_to) +
-					Tools.getSongsDir()
+					Tools.getPacksDir()
 					;
 				success = true;
 			} else if (!hasFolders) { // No album or is an osz
@@ -266,7 +266,7 @@ public class ToolsUnzipper implements Runnable {
 				e = zipfile.entries();
 				while (e.hasMoreElements()) {
 					entry = e.nextElement();
-					String path = Tools.getSongsDir() + "/" + entry.getName();
+					String path = Tools.getPacksDir() + "/" + entry.getName();
 					extract(path, zipfile, is, dest, entry);
 					extractingBar.incrementProgressBy(1);
 				}
@@ -274,7 +274,7 @@ public class ToolsUnzipper implements Runnable {
 					Tools.getString(R.string.ToolsUnzipper_songpack) +
 					filename + 
 					Tools.getString(R.string.ToolsUnzipper_installed_to) +
-					Tools.getSongsDir()
+					Tools.getPacksDir()
 					;
 				success = true;
 			}

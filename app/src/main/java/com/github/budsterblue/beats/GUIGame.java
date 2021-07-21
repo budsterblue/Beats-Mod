@@ -3,6 +3,7 @@ package com.github.budsterblue.beats;
 import java.io.File;
 import java.util.HashMap;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -19,11 +20,22 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Region.Op;
 import android.media.AudioManager;
-import android.os.*;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.SystemClock;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.*;
 import android.os.Vibrator;
+import android.view.KeyEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+
+import androidx.annotation.NonNull;
 
 public class GUIGame extends Activity {
 	
@@ -109,9 +121,8 @@ public class GUIGame extends Activity {
 			 * we can move the logic of this method to GUIHandler
 			 * (in the same manner as timeToY and pitchToX) */
 			boolean fallingDown = false;
-			switch (Tools.gameMode) {
-				case Tools.STANDARD: fallingDown = false;    break;
-				case Tools.REVERSE:  fallingDown = true;     break;
+			if (Tools.gameMode == Tools.REVERSE) {
+				fallingDown = true;
 			}
 			int ymin, ymax, midpt;
 			switch (noteAppearance) {
@@ -142,7 +153,7 @@ public class GUIGame extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Tools.setContext(this);
-		System.gc(); // Request for garbage collection and hope it runs before updating starts
+		//System.gc(); // Request for garbage collection and hope it runs before updating starts
 		// Get settings
 		/*
 		int priority = Integer.valueOf(
@@ -204,7 +215,7 @@ public class GUIGame extends Activity {
 		// Setup view
 		int hardwareAccelerate = Integer.parseInt(
 				Tools.getSetting(R.string.hardwareAccelerate, R.string.hardwareAccelerateDefault));
-		if (hardwareAccelerate == 1) {
+		if (hardwareAccelerate == 2) {
 			mView = new RefreshHandlerView(this);
 		} else {
 			// SurfaceView is not hardware accelerated but faster than normal Views
@@ -263,7 +274,7 @@ public class GUIGame extends Activity {
 	}
 	
 	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
+	public void onConfigurationChanged(@NonNull Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
 		Tools.setScreenDimensions();
 		h.setupXY();
@@ -299,7 +310,7 @@ public class GUIGame extends Activity {
 			while (_run) {
 				Canvas c = null;
 				try {
-					synchronized (_surfaceHolder) {
+					//synchronized (_surfaceHolder) {
 						if (_hardwareAccelerate == 1 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 							c = _surfaceHolder.lockHardwareCanvas();
 						} else {
@@ -311,7 +322,7 @@ public class GUIGame extends Activity {
 							}
 							_view.onDraw(c);
 						}
-					}
+					//}
 				} finally {
 					// do this in a finally so that if an exception is thrown
 					// during the above, we don't leave the Surface in an
@@ -435,6 +446,7 @@ public class GUIGame extends Activity {
 			}	
 		}
 		
+		@SuppressLint("DefaultLocale")
 		private void setupDraw() {
 			setupBG();
 			
@@ -862,11 +874,11 @@ public class GUIGame extends Activity {
 			// TODO Auto-generated method stub
 		}
 	
-		public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+		public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
 			// TODO Auto-generated method stub
 		}
-		
-		public void surfaceCreated(SurfaceHolder holder) {
+
+		public void surfaceCreated(@NonNull SurfaceHolder holder) {
 			_thread = new SurfaceHolderThread(holder, mView);
 			_thread.setRunning(true);
 			if (!_thread.isAlive()) {
@@ -878,7 +890,8 @@ public class GUIGame extends Activity {
 			resumeGame(false);
 		}
 
-		public void surfaceDestroyed(SurfaceHolder holder) {
+		@Override
+		public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
 			boolean retry = true;
 			_thread.setRunning(false);
 			while (retry) {
@@ -940,13 +953,9 @@ public class GUIGame extends Activity {
 
 	private void exitGame() {
 		stopGame(Tools.getString(R.string.GUIGame_exiting), 0, 64, 255, false, true); // royal blue
-		//int hardwareAccelerate = Integer.parseInt(
-		//		Tools.getSetting(R.string.hardwareAccelerate, R.string.hardwareAccelerateDefault));
-		//if (hardwareAccelerate == 1) {
-		mp.onDestroy();
-		h.releaseVibrator();
-		triggerRebirth(this);
-		//}
+		if (Tools.getSetting(R.string.hardwareAccelerate, R.string.hardwareAccelerateDefault).equals("0")) {
+			triggerRebirth(this);
+		}
 	}
 	private void resumeGame() {
 		resumeGame(true);
@@ -995,20 +1004,15 @@ public class GUIGame extends Activity {
 		 * */
 		mView.getGameView().clearBitmaps();
 		drawarea.clearBitmaps();
-		System.gc();
+		//System.gc();
 	}
 	
 	@Override
 	protected void onDestroy() {
-		Log.d("GUIGame", "GUIGame destroyed.");
 		clearBitmaps(); // I removed this in the old code
 		exitGame();
-		mp.onDestroy();
 		h.releaseVibrator();
-		/*Intent i = getBaseContext().getPackageManager()
-				.getLaunchIntentForPackage( getBaseContext().getPackageName() );
-		i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		startActivity(i);*/
+		mp.onDestroy();
 		super.onDestroy();
 	}
 	

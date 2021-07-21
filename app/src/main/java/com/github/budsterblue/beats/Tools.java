@@ -381,13 +381,13 @@ public class Tools {
 	}
 
 	public static String getBeatsDir() {
-		return c.getFilesDir().getPath();
+		return Objects.requireNonNull(c.getExternalFilesDir(null)).getPath();
 	}
-	public static String getSongsDir() {
-		return getBeatsDir() + res.getString(R.string.Tools_path_songs);
+	public static String getPacksDir() {
+		return getBeatsDir() + res.getString(R.string.Tools_path_packs);
 	}
 	public static String getSinglesDir() {
-		return getSongsDir() + res.getString(R.string.Tools_path_singles);
+		return getPacksDir() + res.getString(R.string.Tools_path_singles);
 	}
 	public static String getScreenshotsDir() {
 		return getBeatsDir() + res.getString(R.string.Tools_path_screenshots);

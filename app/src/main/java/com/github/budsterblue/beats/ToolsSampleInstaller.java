@@ -4,7 +4,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 
 import androidx.annotation.NonNull;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Handler;
@@ -61,8 +60,7 @@ public class ToolsSampleInstaller implements Runnable {
 			extracthandler.sendEmptyMessage(-1);
 		}		
 	}
-	
-	@SuppressLint("HandlerLeak")
+
 	public void extract() {
 		/*
 		DialogInterface.OnClickListener extract_action = new DialogInterface.OnClickListener() {

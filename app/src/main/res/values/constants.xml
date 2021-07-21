@@ -27,7 +27,7 @@
 	
 	<!-- Tools -->
 	<string name="Tools_path_beats">"/Beats"</string>
-	<string name="Tools_path_songs">"/Songs"</string>
+	<string name="Tools_path_packs">"/Packs"</string>
 	<string name="Tools_path_singles">"/Singles"</string>
 	<string name="Tools_path_screenshots">"/Screenshots"</string>
 	<string name="Tools_path_backgrounds">"/Backgrounds"</string>

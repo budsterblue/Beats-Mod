@@ -28,18 +28,21 @@ public class MenuFileChooser extends AppCompatActivity implements MenuFileArrayA
     private boolean useShortDirNames;
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
+    private DividerItemDecoration dividerItemDecoration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.choose);
+        Tools.setContext(this);
         // set up the RecyclerView
         recyclerView = findViewById(R.id.choose_recycler);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         registerForContextMenu(recyclerView);
-        Objects.requireNonNull(this.getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        Tools.setContext(this);
+        dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+                layoutManager.getOrientation());
+        //Objects.requireNonNull(this.getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         adapter = null;
         selectedFilePath = null;
@@ -49,19 +52,19 @@ public class MenuFileChooser extends AppCompatActivity implements MenuFileArrayA
         useShortDirNames = Tools.getBooleanSetting(R.string.useShortDirNames, R.string.useShortDirNamesDefault);
 
         if (prefLastDir.equals("")) {
-            prefLastDir = Tools.getSongsDir();
+            prefLastDir = Tools.getPacksDir();
         }
         cwd = new File(prefLastDir);
         if (prefLastDir.length() > 0 &&
                 cwd.exists() &&
                 cwd.getParentFile() != null &&
-                !cwd.getPath().equals(Tools.getSongsDir())
+                !cwd.getPath().equals(Tools.getPacksDir())
         ) {
             cwd = cwd.getParentFile();
         } else {
             String[] browseLocationOrder = {
                     prefLastDir,
-                    Tools.getSongsDir(),
+                    Tools.getPacksDir(),
             };
             for (String path: browseLocationOrder) {
                 if (path != null) {
@@ -102,14 +105,18 @@ public class MenuFileChooser extends AppCompatActivity implements MenuFileArrayA
         }
     }
 
-    private void ls(File dir) {
+    //private void ls(File dir) {
+    public void refresh() {
+        File dir = cwd;
         if (dir == null) return;
 
         // remove /data/user/0/com.github.budsterblue.beats/files from title
-        if (dir.getAbsolutePath().equals(Tools.getBeatsDir())){
-            setTitle("/");
+        if (dir.getAbsolutePath().equals(Tools.getPacksDir())){
+            setTitle(dir.getAbsolutePath().replace(Tools.getBeatsDir() + "/", ""));
+            Objects.requireNonNull(this.getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
         } else {
-            setTitle(dir.getAbsolutePath().replace(Tools.getBeatsDir(), ""));
+            setTitle(dir.getAbsolutePath().replace(Tools.getPacksDir() + "/", ""));
+            Objects.requireNonNull(this.getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         }
         // Get lists
         File[] l = dir.listFiles();
@@ -135,18 +142,20 @@ public class MenuFileChooser extends AppCompatActivity implements MenuFileArrayA
         dl.addAll(fl); // Add file list to end of directories list
 
         // Display
-        adapter = new MenuFileArrayAdapter(this, R.layout.choose_row, dl);
-        adapter.setClickListener(this);
-        adapter.setLongClickListener(this);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
-                layoutManager.getOrientation());
-        recyclerView.addItemDecoration(dividerItemDecoration);
-        recyclerView.setAdapter(adapter);
+        if (adapter == null) {
+            adapter = new MenuFileArrayAdapter(this, dl);
+            adapter.setClickListener(this);
+            adapter.setLongClickListener(this);
+            recyclerView.addItemDecoration(dividerItemDecoration);
+            recyclerView.setAdapter(adapter);
+        } else {
+            adapter.updateData(dl);
+        }
     }
 
-    public void refresh() {
+    /*public void refresh() {
         ls(cwd);
-    }
+    }*/
 
     @Override
     public void onItemClick(View view, int position) {
@@ -189,7 +198,6 @@ public class MenuFileChooser extends AppCompatActivity implements MenuFileArrayA
                 Tools.cancel_action,
                 -1
         );
-        //return true;
     }
 
     @Override
@@ -205,7 +213,7 @@ public class MenuFileChooser extends AppCompatActivity implements MenuFileArrayA
         Scanner sc = null;
         try {
             sc = new Scanner(url);
-            String buffer = "";
+            String buffer;
             while (sc.hasNextLine()) {
                 buffer = sc.nextLine();
                 if (buffer.contains("URL=")) {
@@ -282,19 +290,23 @@ public class MenuFileChooser extends AppCompatActivity implements MenuFileArrayA
         // Directory
         if (i.isDirectory()) {
             File f = new File(selectedFilePath);
-            if (f.canRead() && !f.getAbsolutePath().equals(Tools.getBeatsDir().replace("/files", ""))) { // this is a hack, but it works
+            //if (f.canRead() && !f.getAbsolutePath().equals(Tools.getBeatsDir().replace("/files", ""))) { // this is a hack, but it works
+            if (f.canRead()) { // && !f.getAbsolutePath().equals(Tools.getBeatsDir())
                 cwd = f;
                 String path;
+                // weird if else logic to prevent showing song folder as song is loading
                 if (Tools.getBooleanSetting(R.string.stepfileFolderCheck, R.string.stepfileFolderCheckDefault)) {
                     path = Tools.checkStepfileDir(f);
                 } else {
                     path = null;
                 }
-                if (path == null) {
-                    refresh();
-                } else {
+
+                if (path != null) {
                     selectStepfile(path);
+                } else {
+                    refresh();
                 }
+
             } else {
                 Tools.toast(
                         Tools.getString(R.string.MenuFilechooser_list_error) +
