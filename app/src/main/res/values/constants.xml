@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<!-- App -->
-	<string name="App_name">"Beats"</string>
-	<string name="Titlebar">"Beats - "</string>
+	<string name="App_name">"RevoluTap"</string>
 	
 	<!-- URLs -->
+	<string name="Url_code">"https://github.com/budsterblue/revolutap"</string>
 	<string name="Url_website">"http://beatsportable.com"</string>
-	<string name="Url_forums">"http://beatsportable.com/forum/"</string>
-	<string name="Url_updates">"http://beatsportable.com/updates/"</string>
 	<string name="Url_tutorial">"http://beatsportable.com/tutorial/"</string>
 	<string name="Url_demo">"http://beatsportable.com/demo/"</string>
-	<string name="Url_todo">"http://beatsportable.com/todo/"</string>
-	<string name="Url_changelog">"http://beatsportable.com/changelog/"</string>
-	<string name="Url_downloads">"https://search.stepmaniaonline.net/"</string>
-	<string name="Url_donate">"http://beatsportable.com/donate/"</string>
+	<string name="Url_downloads">"https://etternaonline.com/packs/"</string>
 	
 	<!-- Letter Scores -->
 	<string name="Letter_E">"E"</string>
@@ -27,14 +22,13 @@
 	
 	<!-- Tools -->
 	<string name="Tools_path_beats">"/Beats"</string>
-	<string name="Tools_path_packs">"/Packs"</string>
+	<string name="Tools_path_packs">"/Songs"</string>
 	<string name="Tools_path_singles">"/Singles"</string>
 	<string name="Tools_path_screenshots">"/Screenshots"</string>
 	<string name="Tools_path_backgrounds">"/Backgrounds"</string>
 	<string name="Tools_path_noteskins">"/NoteSkins"</string>
 	<string name="Tools_path_nomedia">"/.nomedia"</string>
 	<string name="Tools_path_version">"/version.txt"</string>
-	<string name="Tools_graphics_zip">"Beats 1.7x Graphics.zip"</string>
 	<string name="Tools_sample_zip">"Lisek's Stepfiles (Beats Sample Songs).zip"</string>
 	
 	<!-- Data Settings -->

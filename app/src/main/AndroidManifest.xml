@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools"
-	package="com.github.budsterblue.beats"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	package="com.github.budsterblue.revolutap"
 	android:versionCode="22"
 	android:versionName="@string/App_version"
 	android:installLocation="auto">
@@ -11,31 +9,31 @@
 		android:enabled="true"
 		android:allowBackup="true"
 		android:hardwareAccelerated="true"
-		android:icon="@drawable/icon"
+		android:icon="@mipmap/ic_launcher"
 		android:label="@string/App_name"
 		android:description="@string/App_description"
 		android:theme="@style/Theme.AppCompat.DayNight" >
 		<activity
-			android:name="com.github.budsterblue.beats.MenuHome" >
+			android:name="com.github.budsterblue.revolutap.MenuHome" >
 			<intent-filter>
 				<action	android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
 		<activity
-			android:name="com.github.budsterblue.beats.MenuCredits">
+			android:name="com.github.budsterblue.revolutap.MenuCredits">
 			<intent-filter>
 				<category android:name="android.intent.category.DEFAULT" />
 				<action android:name=".MenuCredits" />
 			</intent-filter>
 		</activity>
 		<activity
-			android:name="com.github.budsterblue.beats.MenuFileChooser"
+			android:name="com.github.budsterblue.revolutap.MenuFileChooser"
 			android:configChanges="orientation|keyboardHidden|screenSize" />
 		<activity
-			android:name="com.github.budsterblue.beats.MenuSettings" />
+			android:name="com.github.budsterblue.revolutap.MenuSettings" />
 		<activity
-			android:name="com.github.budsterblue.beats.GUIGame"
+			android:name="com.github.budsterblue.revolutap.GUIGame"
 			android:theme="@style/Theme.NoBackground"
 			android:configChanges="orientation|keyboardHidden|screenSize"
 			android:exported="true"

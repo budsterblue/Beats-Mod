@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="@string/linksCategoryTitle">
+    <PreferenceCategory android:title="@string/infoCategoryTitle">
+        <PreferenceScreen
+            android:summary="@string/codeTitle"
+            android:title="@string/codeDesc">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="@string/Url_code" />
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:summary="@string/creditsDesc"
+            android:title="@string/creditsTitle">
+            <intent android:action=".MenuCredits" />
+        </PreferenceScreen>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/origInfoCategoryTitle">
         <PreferenceScreen
             android:summary="@string/websiteDesc"
             android:title="@string/websiteTitle">
@@ -8,15 +22,6 @@
                 android:action="android.intent.action.VIEW"
                 android:data="@string/Url_website" />
         </PreferenceScreen>
-        <PreferenceScreen
-            android:summary="@string/forumsDesc"
-            android:title="@string/forumsTitle">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="@string/Url_forums" />
-        </PreferenceScreen>
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/infoCategoryTitle">
         <PreferenceScreen
             android:summary="@string/tutorialDesc"
             android:title="@string/tutorialTitle">
@@ -30,34 +35,6 @@
             <intent
                 android:action="android.intent.action.VIEW"
                 android:data="@string/Url_demo" />
-        </PreferenceScreen>
-        <PreferenceScreen
-            android:summary="@string/todoDesc"
-            android:title="@string/todoTitle">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="@string/Url_todo" />
-        </PreferenceScreen>
-        <PreferenceScreen
-            android:summary="@string/changelogDesc"
-            android:title="@string/changelogTitle">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="@string/Url_changelog" />
-        </PreferenceScreen>
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/thanksCategoryTitle">
-        <PreferenceScreen
-            android:summary="@string/donateDesc"
-            android:title="@string/donateTitle">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="@string/Url_donate" />
-        </PreferenceScreen>
-        <PreferenceScreen
-            android:summary="@string/creditsDesc"
-            android:title="@string/creditsTitle">
-            <intent android:action=".MenuCredits" />
         </PreferenceScreen>
     </PreferenceCategory>
 </PreferenceScreen>

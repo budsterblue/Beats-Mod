@@ -37,7 +37,7 @@
             android:summary="@string/tapboxLayoutDesc"
             android:title="@string/tapboxLayoutTitle" />
         <Preference
-            android:fragment="com.github.budsterblue.beats.MenuSettings$MenuSettingsFragmentModifiers"
+            android:fragment="com.github.budsterblue.revolutap.MenuSettings$MenuSettingsFragmentModifiers"
             android:summary="@string/modifiersScreenDesc"
             android:title="@string/modifiersScreenTitle" />
     </PreferenceCategory>
@@ -50,7 +50,7 @@
             android:summary="@string/hardwareAccelerationDesc"
             android:title="@string/hardwareAccelerationTitle" />
         <Preference
-            android:fragment="com.github.budsterblue.beats.MenuSettings$MenuSettingsFragmentGame"
+            android:fragment="com.github.budsterblue.revolutap.MenuSettings$MenuSettingsFragmentGame"
             android:summary="@string/gameScreenDesc"
             android:title="@string/gameScreenTitle" />
         <ListPreference
@@ -60,13 +60,6 @@
             android:key="@string/noteskin"
             android:summary="@string/noteskinDesc"
             android:title="@string/noteskinTitle" />
-        <ListPreference
-            android:defaultValue="@string/backgroundImageDefault"
-            android:entries="@array/backgroundImage"
-            android:entryValues="@array/backgroundImageValues"
-            android:key="@string/backgroundImage"
-            android:summary="@string/backgroundImageDesc"
-            android:title="@string/backgroundImageTitle" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/tapSettingsCategoryTitle">
         <ListPreference
@@ -91,7 +84,7 @@
             android:summary="@string/tapboxYOffsetDesc"
             android:title="@string/tapboxYOffsetTitle" />
         <Preference
-            android:fragment="com.github.budsterblue.beats.MenuSettings$MenuSettingsFragmentVibrate"
+            android:fragment="com.github.budsterblue.revolutap.MenuSettings$MenuSettingsFragmentVibrate"
             android:summary="@string/vibrateScreenDesc"
             android:title="@string/vibrateScreenTitle" />
     </PreferenceCategory>
@@ -128,26 +121,19 @@
     <PreferenceCategory android:title="@string/miscCategoryTitle">
         <Preference
             android:summary="@string/downloadPacksDesc"
-            android:title="@string/downloadScreenTitle">
+            android:title="@string/downloadPacksTitle">
             <intent
                 android:action="android.intent.action.VIEW"
                 android:data="@string/Url_downloads" />
         </Preference>
         <Preference
-            android:fragment="com.github.budsterblue.beats.MenuSettings$MenuSettingsFragmentInfo"
+            android:fragment="com.github.budsterblue.revolutap.MenuSettings$MenuSettingsFragmentInfo"
             android:summary="@string/infoScreenDesc"
             android:title="@string/infoScreenTitle" />
         <Preference
-            android:fragment="com.github.budsterblue.beats.MenuSettings$MenuSettingsFragmentAdvanced"
+            android:fragment="com.github.budsterblue.revolutap.MenuSettings$MenuSettingsFragmentAdvanced"
             android:summary="@string/advancedScreenDesc"
             android:title="@string/advancedScreenTitle" />
-        <ListPreference
-            android:defaultValue="@string/languageDefault"
-            android:entries="@array/languages"
-            android:entryValues="@array/languagesValues"
-            android:key="@string/language"
-            android:summary="@string/languageDesc"
-            android:title="@string/languageTitle" />
         <ListPreference
             android:defaultValue="@string/resetHighScoresDefault"
             android:entries="@array/toggle"

@@ -6,11 +6,10 @@
     android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/bg"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:scaleType="centerCrop"
-        android:src="@android:color/black" />
+        android:src="@drawable/bg_blue" />
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -73,7 +72,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10.0dip"
-                android:src="@drawable/beats_logo" />
+                android:src="@drawable/revolutap_banner" />
 
             <LinearLayout
                 android:id="@+id/menu_main_items_LinearLayout"
@@ -106,11 +105,6 @@
                     android:layout_height="wrap_content"
                     android:text="@string/Menu_download_songs" />
 
-                <TextView
-                    android:id="@+id/exit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/Menu_exit" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

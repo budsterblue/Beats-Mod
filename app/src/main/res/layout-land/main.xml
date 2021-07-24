@@ -6,7 +6,6 @@
     android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/bg"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:scaleType="centerCrop"
@@ -53,7 +52,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5.0dip"
                     android:layout_marginRight="50.0dip"
-                    android:src="@drawable/beats_logo" />
+                    android:src="@drawable/revolutap_banner" />
 
                 <ImageView
                     android:id="@+id/gameMode"
@@ -99,13 +98,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
                     android:text="@string/Menu_settings" />
-
-                <TextView
-                    android:id="@+id/exit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:text="@string/Menu_exit" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
