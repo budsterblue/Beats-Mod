@@ -84,11 +84,12 @@ public class GUIFallingHold extends GUIFallingObject {
 		//TODO diagonal clip paths for up/down arrows (straight for left/right)
 
 		// wrap with save and restore because: https://stackoverflow.com/questions/50231950/what-is-the-best-alternative-to-canvas-cliprect-with-region-op-replace/50247323
-		canvas.save();
 		drawarea.setClip_arrowSpace(canvas);
-		Path path = new Path();
-		path.addRect(rect_left, hold_rect_top, rect_right, hold_rect_bottom, Direction.CCW);
-		canvas.clipPath(path, Op.INTERSECT);
+		canvas.save();
+		//Path path = new Path();
+		//path.addRect(rect_left, hold_rect_top, rect_right, hold_rect_bottom, Direction.CCW);
+		//canvas.clipPath(path, Op.INTERSECT);
+		canvas.clipRect(rect_left, hold_rect_top, rect_right, hold_rect_bottom, Op.INTERSECT);
 
 		//need to swap comparison direction based on motion direction, hence xor
 		for (int y = hold_draw_start; (y <= hold_draw_end) ^ fallingDown; y += hold_draw_add) {
@@ -101,7 +102,6 @@ public class GUIFallingHold extends GUIFallingObject {
 		}
 		canvas.restore();
 		canvas.save();
-		drawarea.setClip_arrowSpace(canvas);
 
 		//end arrow (top)
 		canvas.drawBitmap(
