@@ -153,10 +153,6 @@ public class MenuFileChooser extends AppCompatActivity implements MenuFileArrayA
         }
     }
 
-    /*public void refresh() {
-        ls(cwd);
-    }*/
-
     @Override
     public void onItemClick(View view, int position) {
         MenuFileItem i = adapter.getItem(position);
@@ -183,7 +179,7 @@ public class MenuFileChooser extends AppCompatActivity implements MenuFileArrayA
                                 e.getMessage(),
                         Tools.cancel_action);
             }
-            refresh();
+            adapter.removeItem(position);
             dialog.cancel();
         };
 
