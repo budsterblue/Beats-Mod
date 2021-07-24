@@ -22,13 +22,6 @@
             android:key="@string/noteAppearance"
             android:summary="@string/noteAppearanceDesc"
             android:title="@string/noteAppearanceTitle" />
-        <ListPreference
-            android:defaultValue="@string/colorHoldsDefault"
-            android:entries="@array/toggle"
-            android:entryValues="@array/toggleValues"
-            android:key="@string/colorHolds"
-            android:summary="@string/colorHoldsDesc"
-            android:title="@string/colorHoldsTitle" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/notesCategoryTitle">
         <ListPreference

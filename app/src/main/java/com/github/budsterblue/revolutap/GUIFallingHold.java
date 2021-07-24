@@ -35,8 +35,6 @@ public class GUIFallingHold extends GUIFallingObject {
 	private boolean hasBeenHit = false;
 	private boolean ok_override = false; // set to true if we're close enough to the end to count an ok
 	public boolean hasStartedVibrating = false;
-	private final boolean colorHolds = Tools.getBooleanSetting(R.string.colorHolds, R.string.colorHoldsDefault);
-	private final Paint paint = new Paint();
 
 	GUIFallingHold(DataNote n) {
 		super(n, n.fraction, n.column, n.time, n.time + MAX_HOLD_MS);
@@ -85,42 +83,34 @@ public class GUIFallingHold extends GUIFallingObject {
 
 		//TODO diagonal clip paths for up/down arrows (straight for left/right)
 
-		if (colorHolds) {
-			canvas.drawColor(Color.parseColor("#eeeb01"));
-			drawarea.setClip_arrowSpace(canvas);
-			RectF rectF = new RectF(rect_left, end_rect_top, rect_right, end_rect_bottom);
-			paint.setColor(Color.parseColor("#eeeb01"));
-			canvas.drawArc(rectF, 0F, 180F, true, paint);
-		} else {
-			// wrap with save and restore because: https://stackoverflow.com/questions/50231950/what-is-the-best-alternative-to-canvas-cliprect-with-region-op-replace/50247323
-			canvas.save();
-			drawarea.setClip_arrowSpace(canvas);
-			Path path = new Path();
-			path.addRect(rect_left, hold_rect_top, rect_right, hold_rect_bottom, Direction.CCW);
-			canvas.clipPath(path, Op.INTERSECT);
+		// wrap with save and restore because: https://stackoverflow.com/questions/50231950/what-is-the-best-alternative-to-canvas-cliprect-with-region-op-replace/50247323
+		canvas.save();
+		drawarea.setClip_arrowSpace(canvas);
+		Path path = new Path();
+		path.addRect(rect_left, hold_rect_top, rect_right, hold_rect_bottom, Direction.CCW);
+		canvas.clipPath(path, Op.INTERSECT);
 
-			//need to swap comparison direction based on motion direction, hence xor
-			for (int y = hold_draw_start; (y <= hold_draw_end) ^ fallingDown; y += hold_draw_add) {
-				canvas.drawBitmap(
-						drawarea.getBitmap(
-								holdRsrc(mode, false),
-								Tools.button_w, holdimg_h
-						),
-						rect_left, y, null);
-			}
-			canvas.restore();
-			canvas.save();
-			drawarea.setClip_arrowSpace(canvas);
-
-			//end arrow (top)
+		//need to swap comparison direction based on motion direction, hence xor
+		for (int y = hold_draw_start; (y <= hold_draw_end) ^ fallingDown; y += hold_draw_add) {
 			canvas.drawBitmap(
 					drawarea.getBitmap(
-							holdRsrc(mode, true),
-							Tools.button_w, Tools.button_h
+							holdRsrc(mode, false),
+							Tools.button_w, holdimg_h
 					),
-					rect_left, end_rect_top, null
-			);
+					rect_left, y, null);
 		}
+		canvas.restore();
+		canvas.save();
+		drawarea.setClip_arrowSpace(canvas);
+
+		//end arrow (top)
+		canvas.drawBitmap(
+				drawarea.getBitmap(
+						holdRsrc(mode, true),
+						Tools.button_w, Tools.button_h
+				),
+				rect_left, end_rect_top, null
+		);
 
 		//start arrow (bottom)
 		canvas.drawBitmap(
@@ -131,9 +121,7 @@ public class GUIFallingHold extends GUIFallingObject {
 				rect_left, start_rect_top, null
 				);
 
-		if (!colorHolds) {
-			canvas.restore();
-		}
+		canvas.restore();
 		//debug
 		
 		/*Paint p = new Paint();
