@@ -55,7 +55,7 @@
 	<string name="holds">"holds"</string>
 	<string name="holdsDefault">"1"</string>
 	<string name="jumps">"jumps"</string>
-	<string name="jumpsDefault">"0"</string>
+	<string name="jumpsDefault">"1"</string>
 	<string name="randomize">"randomize"</string>
 	<string name="randomizeDefault">"0"</string>
 	<string name="accuracyLevel">"accuracyLevel"</string>
@@ -87,7 +87,7 @@
 	<string name="tapboxFading">"tapboxFading"</string>
 	<string name="tapboxFadingDefault">"50"</string>
 	<string name="tapboxOverlap">"tapboxOverlap"</string>
-	<string name="tapboxOverlapDefault">"0.1"</string>
+	<string name="tapboxOverlapDefault">"0"</string>
 	<string name="tapboxYOffset">"tapboxYOffset"</string>
 	<string name="tapboxYOffsetDefault">"0"</string>
 	<string name="vibrateTap">"vibrateTap"</string>
