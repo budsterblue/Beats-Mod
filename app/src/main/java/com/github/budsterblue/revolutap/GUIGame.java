@@ -28,6 +28,7 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.util.SparseArray;
 import android.os.Vibrator;
+import android.view.Choreographer;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -835,15 +836,21 @@ public class GUIGame extends Activity {
 		}
 	}
 	
-	private class SurfaceHolderView extends SurfaceView implements SurfaceHolder.Callback, GameViewHandler {
-		public SurfaceHolderThread _thread;
+	private class SurfaceHolderView extends SurfaceView implements SurfaceHolder.Callback, GameViewHandler, Choreographer.FrameCallback {
+		//public SurfaceHolderThread _thread;
 		private final GameView mView;
+		private SurfaceHolder _holder;
+		private final int _hardwareAccelerate = Integer.parseInt(
+				Tools.getSetting(R.string.hardwareAccelerate, R.string.hardwareAccelerateDefault));
+		private long _frameTime = System.nanoTime();
+		private boolean _paused = false;
 		
 		public SurfaceHolderView(Context context) {
 			super(context);
 			mView = new GameView();
 			getHolder().addCallback(this);
-			_thread = new SurfaceHolderThread(this.getHolder(), mView);
+			//Choreographer.getInstance().postFrameCallback(this);
+			//_thread = new SurfaceHolderThread(this.getHolder(), mView);
 		}
 		
 		public View getView() {
@@ -864,11 +871,15 @@ public class GUIGame extends Activity {
 		}
 		
 		public void startUpdating() {
-			_thread.setPaused(false);
+			//_thread.setPaused(false);
+			Choreographer.getInstance().postFrameCallback(this);
+			_paused = false;
 		}
 		
 		public void stopUpdating() {
-			_thread.setPaused(true);
+			//_thread.setPaused(true);
+			Choreographer.getInstance().removeFrameCallback(this);
+			_paused = true;
 		}
 		
 		public void forceUpdate() {
@@ -880,20 +891,23 @@ public class GUIGame extends Activity {
 		}
 
 		public void surfaceCreated(@NonNull SurfaceHolder holder) {
-			_thread = new SurfaceHolderThread(holder, mView);
-			_thread.setRunning(true);
-			if (!_thread.isAlive()) {
-				_thread.start();
-			}
+			_holder = holder;
+			doFrame(_frameTime);
+			//_thread = new SurfaceHolderThread(holder, mView);
+			//_thread.setRunning(true);
+			//if (!_thread.isAlive()) {
+				//_thread.start();
+			//}
 			// Hack sync fix
 			//resumeGame(false);
-			pauseGame(false, false);
-			resumeGame(false);
+			//pauseGame(false, false);
+			//resumeGame(false);
+			Choreographer.getInstance().postFrameCallback(this);
 		}
 
 		@Override
 		public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
-			boolean retry = true;
+			/*boolean retry = true;
 			_thread.setRunning(false);
 			while (retry) {
 				try {
@@ -902,7 +916,35 @@ public class GUIGame extends Activity {
 				} catch (InterruptedException e) {
 					// we will try it again and again...
 				}
+			}*/
+			Choreographer.getInstance().removeFrameCallback(this);
+		}
+
+		@Override
+		public void doFrame(long frameTimeNanos) {
+			_frameTime = frameTimeNanos;
+			Canvas c = null;
+			try {
+				if (_hardwareAccelerate == 1 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+					c = _holder.lockHardwareCanvas();
+				} else {
+					c = _holder.lockCanvas(null);
+				}
+				if (c != null) {
+					if (!_paused) {
+						update();
+					}
+					mView.onDraw(c);
+				}
+			} finally {
+				// do this in a finally so that if an exception is thrown
+				// during the above, we don't leave the Surface in an
+				// inconsistent state
+				if (c != null) {
+					_holder.unlockCanvasAndPost(c);
+				}
 			}
+			Choreographer.getInstance().postFrameCallback(this);
 		}
 	}
 	
