@@ -169,6 +169,11 @@ public class MenuFileArrayAdapter extends RecyclerView.Adapter<MenuFileArrayAdap
         notifyDataSetChanged();
     }
 
+    public void removeItem(int position) {
+        mItems.remove(position);
+        notifyItemRemoved(position);
+    }
+
     // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
