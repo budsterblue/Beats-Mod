@@ -1,12 +1,11 @@
 package com.github.budsterblue.revolutap;
 
+import androidx.annotation.NonNull;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
@@ -32,7 +31,6 @@ public class MenuHome extends Activity {
 
 	// Private variables
 	private final String title = "";
-	private String backgroundPath = "";
 	private boolean largeText = false;
 	private final String[] largeTextCountries= {"ko", "zh", "ru", "ja", "tr"};
 	private static Locale defaultLocale;
@@ -91,58 +89,10 @@ public class MenuHome extends Activity {
 		formatMenuItem(findViewById(R.id.select_song), R.string.Menu_select_song);
 		formatMenuItem(findViewById(R.id.settings), R.string.Menu_settings);
 		formatMenuItem(findViewById(R.id.download_songs), R.string.Menu_download_songs);
-		//formatMenuItem(findViewById(R.id.exit), R.string.Menu_exit);
 		
 		updateDifficulty();
 		updateAutoPlay();
 		updateGameMode();
-		
-		// Game Mode
-		/*
-		if (Tools.gameMode == Tools.OSU_MOD) {
-			gameMode.setImageResource(R.drawable.icon_osu);
-		} else {
-			gameMode.setImageResource(R.drawable.icon_sm);
-		}
-		*/
-		
-		// Background data icon
-		/*
-		ConnectivityManager cm =
-			(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-		ImageView backgroundData = (ImageView) findViewById(R.id.backgroundData);
-		if (cm.getBackgroundDataSetting() &&
-			!Tools.getBooleanSetting(R.string.ignoreSyncWarning, R.string.ignoreSyncWarningDefault)) {
-			backgroundData.setVisibility(View.VISIBLE);
-		} else {
-			backgroundData.setVisibility(View.GONE);
-		}
-		*/
-		
-		// Background image
-		/*String backgroundPathNew = Tools.getBackgroundRes();
-		if (!backgroundPath.equals(backgroundPathNew)) {
-			backgroundPath = backgroundPathNew;
-			ImageView bg = findViewById(R.id.bg);
-			try {
-				Bitmap newBackground = BitmapFactory.decodeFile(backgroundPath);
-				if (newBackground != null) {
-					bg.setImageBitmap(newBackground);
-				} else {
-					// samples.zip has not been unpacked yet, use internal image
-					Bitmap newBackground2 = BitmapFactory.decodeResource(getResources(),
-							R.drawable.bg_blue);
-					if (newBackground2 != null) {
-						bg.setImageBitmap(newBackground2);
-					}
-				}
-			} catch (Throwable t) {
-				//System.gc();
-				ToolsTracker.error("MenuHome.updateLayout", t, "");
-				Tools.toast_long(Tools.getString(R.string.MenuHome_background_image_load_fail));
-			}
-			//System.gc();
-		}*/
 	}
 	
 	// Main screen
@@ -224,15 +174,13 @@ public class MenuHome extends Activity {
 	private void setupLayout() {
 		setContentView(R.layout.main);
 		setVolumeControlStream(AudioManager.STREAM_MUSIC); // To control media volume at all times
-		
-		backgroundPath = ""; // Force background reload
+
 		updateLayout();
 		
 		// Difficulty button
 		final TextView difficulty = findViewById(R.id.difficulty);
 		difficulty.setOnClickListener(v -> {
 			vibrate();
-			//changeDifficulty();
 			nextDifficulty();
 		});
 		difficulty.setOnFocusChangeListener((v, hasFocus) -> {
@@ -309,14 +257,6 @@ public class MenuHome extends Activity {
 			startActivityForResult(intent, SELECT_SONG_PACK);
 		});
 		
-		// Exit button
-		/*TextView exit_b = findViewById(R.id.exit);
-		exit_b.setOnClickListener(v -> {
-			vibrate();
-			//backgroundDataUncheck();
-			finish();
-		});*/
-		
 		// Setup navigation for TVs/keyboard
 		setupDpadNavigation();
 	}
@@ -326,7 +266,6 @@ public class MenuHome extends Activity {
 		R.id.select_song,
 		R.id.settings,
 		R.id.download_songs,
-		//R.id.exit,
 		R.id.difficulty,
 		R.id.gameMode
 	};
@@ -374,7 +313,7 @@ public class MenuHome extends Activity {
 	}
 	
 	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
+	public void onConfigurationChanged(@NonNull Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
 		updateLayout();
 	}
@@ -383,47 +322,6 @@ public class MenuHome extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 	}
-	
-	/*
-	private void showAlertDialog(
-		final int icon, final String title,
-		final int setting, final int defaultValue, final String[] array, final String [] arrayValues
-		) {
-		AlertDialog.Builder difficultyBuilder = new AlertDialog.Builder(this);
-		difficultyBuilder
-			.setIcon(icon)
-			.setTitle(title)
-			.setSingleChoiceItems(
-					array,
-					defaultValue,
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int item) {
-							Tools.putSetting(
-									setting,
-									arrayValues[item]
-									);
-							alertDialog.hide();
-						}
-					}
-			);
-		alertDialog = difficultyBuilder.create();
-		alertDialog.setOwnerActivity(this);
-		alertDialog.show();
-	}
-	*/
-	
-	/*
-	private void changeDifficulty() {
-		showAlertDialog(
-				R.drawable.icon_difficulty,
-				Tools.getString(R.string.difficultyLevelTitle),
-				R.string.difficultyLevel,
-				Integer.parseInt(Tools.getSetting(R.string.difficultyLevel, R.string.difficultyLevelDefault)),
-				Tools.getStringArray(R.array.difficultyLevel),
-				Tools.getStringArray(R.array.difficultyLevelValues)
-				);
-	}
-	*/
 
 	private void toggleAutoPlay() {
 		boolean autoPlay = Tools.getBooleanSetting(R.string.autoPlay, R.string.autoPlayDefault);
@@ -537,18 +435,6 @@ public class MenuHome extends Activity {
 				break;
 		}
 	}
-	/*
-	private void changeGameMode() {
-		showAlertDialog(
-				R.drawable.icon_small,
-				Tools.getString(R.string.gameModeTitle),
-				R.string.gameMode,
-				Integer.parseInt(Tools.getSetting(R.string.gameMode, R.string.gameModeDefault)),
-				Tools.getStringArray(R.array.gameMode),
-				Tools.getStringArray(R.array.gameModeValues)
-				);
-	}
-	*/
 	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		/*
@@ -565,7 +451,7 @@ public class MenuHome extends Activity {
 				startActivity(i);
 				return true;
 			case KeyEvent.KEYCODE_SEARCH:
-				Tools.startWebsiteActivity(Tools.getString(R.string.Url_website));
+				Tools.startWebsiteActivity(Tools.getString(R.string.Url_downloads));
 				return true;
 			default:
 				return super.onKeyDown(keyCode, event);
