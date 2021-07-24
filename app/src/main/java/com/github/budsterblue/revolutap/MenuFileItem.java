@@ -5,9 +5,9 @@ import java.io.File;
 
 public class MenuFileItem implements Comparable<MenuFileItem>{
 
-	private String name, path;
-	private boolean isDir;
-	private File f;
+	private final String name, path;
+	private final boolean isDir;
+	private final File f;
 	
 	public MenuFileItem(String name, String path, boolean isDir, File f) {
 		this.name = name;
