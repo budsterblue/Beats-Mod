@@ -1,7 +1,5 @@
 package com.github.budsterblue.revolutap;
 
-import android.graphics.Color;
-
 public class GUINoteImage {
 	
 	/*
@@ -21,31 +19,7 @@ public class GUINoteImage {
 # 	print "\t\t\t}" 
 # print "\t\t}"
 	 */
-	// For osu! Mod
-	// Lets just hardcode this into GUIFallingOsuFading since its only 2 anyway
-	//public static int rsrc(boolean missed) {
-		//return missed ? "/osu/osu_beat_miss : "/osu/osu_beat_hit;
-	//}
-	public static final int OSU_FRACTION_MAX = 4;
-	public static String osu_beat(int _measurefraction) {
-		switch (_measurefraction) {
-			default:
-			case 1: return "/osu/osu_beat_1.png";
-			case 2: return "/osu/osu_beat_2.png";
-			case 3: return "/osu/osu_beat_3.png";
-			case 4: return "/osu/osu_beat_4.png";
-		}
-	}
-	
-	public static int osu_circle(int _measurefraction) {
-		switch(_measurefraction) {
-			case 1: return Color.BLUE;
-			case 2: return Color.RED;
-			case 3: return Color.YELLOW;
-			case 4: return Color.GREEN;
-			default: return Color.WHITE; // Something is wrong
-		}
-	}
+
 	public static String rsrc(int _pitch, int _measurefraction, boolean _clicked) {
 		switch (_measurefraction) {
 		case 4:
