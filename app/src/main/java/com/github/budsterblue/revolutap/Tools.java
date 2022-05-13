@@ -89,10 +89,7 @@ public class Tools {
 		screen_h = Resources.getSystem().getDisplayMetrics().heightPixels;
 		//screen_h = display.getHeight();
 		screen_s = Math.min(screen_h, screen_w);
-		if (!Objects.equals(settings.getString(
-				res.getString(R.string.fullscreen),
-				res.getString(R.string.fullscreenDefault)
-		), "1")) {
+		if (!getBooleanSetting(R.string.fullscreen, R.string.fullscreenDefault)) {
 			screen_h -= statusBarHeight;
 		}
 		int screen_size = c.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK;
@@ -198,6 +195,10 @@ public class Tools {
 	}
 
 	public static boolean getBooleanSetting(int key, int defValue) {
+		return settings.getBoolean(res.getString(key), Boolean.parseBoolean(res.getString(defValue)));
+	}
+
+	public static boolean getOldBooleanSetting(int key, int defValue) {
 		return Objects.equals(settings.getString(res.getString(key), res.getString(defValue)), "1");
 	}
 
@@ -205,11 +206,16 @@ public class Tools {
 		editor.putString(res.getString(key), value);
 		editor.commit();
 	}
+
+	public static void putBooleanSetting(int key, Boolean value) {
+		editor.putBoolean(res.getString(key), value);
+		editor.commit();
+	}
 	
 	public static void resetSettings() {
 		editor.clear();
+		editor.putBoolean(res.getString(R.string.resetSettings), false);
 		editor.commit();
-		editor.putString(res.getString(R.string.resetSettings), "0");
 	}
 	
 	public static String getString(int id) {

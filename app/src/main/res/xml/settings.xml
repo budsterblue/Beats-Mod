@@ -89,17 +89,17 @@
             android:title="@string/vibrateScreenTitle" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/machineSettingsCategoryTitle">
-        <ListPreference
+        <EditTextPreference
             android:defaultValue="@string/manualOffsetDefault"
-            android:entries="@array/manualOffset"
-            android:entryValues="@array/manualOffsetValues"
+            android:digits="0123456789-"
+            android:inputType="numberSigned"
             android:key="@string/manualOffset"
             android:summary="@string/manualOffsetDesc"
             android:title="@string/manualOffsetTitle" />
-        <ListPreference
+        <EditTextPreference
             android:defaultValue="@string/manualOGGOffsetDefault"
-            android:entries="@array/manualOffset"
-            android:entryValues="@array/manualOffsetValues"
+            android:digits="0123456789-"
+            android:inputType="numberSigned"
             android:key="@string/manualOGGOffset"
             android:summary="@string/manualOGGOffsetDesc"
             android:title="@string/manualOGGOffsetTitle" />
@@ -110,10 +110,8 @@
             android:key="@string/accuracyLevel"
             android:summary="@string/accuracyLevelDesc"
             android:title="@string/accuracyLevelTitle" />
-        <ListPreference
+        <SwitchPreferenceCompat
             android:defaultValue="@string/showPercentDefault"
-            android:entries="@array/toggle"
-            android:entryValues="@array/toggleValues"
             android:key="@string/showPercent"
             android:summary="@string/showPercentDesc"
             android:title="@string/showPercentTitle" />
@@ -134,17 +132,13 @@
             android:fragment="com.github.budsterblue.revolutap.MenuSettings$MenuSettingsFragmentAdvanced"
             android:summary="@string/advancedScreenDesc"
             android:title="@string/advancedScreenTitle" />
-        <ListPreference
+        <SwitchPreferenceCompat
             android:defaultValue="@string/resetHighScoresDefault"
-            android:entries="@array/toggle"
-            android:entryValues="@array/toggleValues"
             android:key="@string/resetHighScores"
             android:summary="@string/resetHighScoresDesc"
             android:title="@string/resetHighScoresTitle" />
-        <ListPreference
+        <SwitchPreferenceCompat
             android:defaultValue="@string/resetSettingsDefault"
-            android:entries="@array/toggle"
-            android:entryValues="@array/toggleValues"
             android:key="@string/resetSettings"
             android:summary="@string/resetSettingsDesc"
             android:title="@string/resetSettingsTitle" />

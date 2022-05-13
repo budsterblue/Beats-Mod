@@ -24,68 +24,45 @@
             android:title="@string/syncDurationTitle" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/filebrowserCategoryTitle">
-        <ListPreference
+        <SwitchPreferenceCompat
             android:defaultValue="@string/autoStartDefault"
-            android:entries="@array/toggle"
-            android:entryValues="@array/toggleValues"
             android:key="@string/autoStart"
             android:summary="@string/autoStartDesc"
             android:title="@string/autoStartTitle" />
-        <ListPreference
+        <SwitchPreferenceCompat
             android:defaultValue="@string/useShortDirNamesDefault"
-            android:entries="@array/toggle"
-            android:entryValues="@array/toggleValues"
             android:key="@string/useShortDirNames"
             android:summary="@string/useShortDirNamesDesc"
             android:title="@string/useShortDirNamesTitle" />
-        <ListPreference
+        <SwitchPreferenceCompat
             android:defaultValue="@string/showSongBannersDefault"
-            android:entries="@array/toggle"
-            android:entryValues="@array/toggleValues"
             android:key="@string/showSongBanners"
             android:summary="@string/showSongBannersDesc"
             android:title="@string/showSongBannersTitle" />
-        <ListPreference
+        <SwitchPreferenceCompat
             android:defaultValue="@string/stepfileFolderCheckDefault"
-            android:entries="@array/toggle"
-            android:entryValues="@array/toggleValues"
             android:key="@string/stepfileFolderCheck"
             android:summary="@string/stepfileFolderCheckDesc"
             android:title="@string/stepfileFolderCheckTitle" />
-        <ListPreference
+        <SwitchPreferenceCompat
             android:defaultValue="@string/installSamplesDefault"
-            android:entries="@array/toggle"
-            android:entryValues="@array/toggleValues"
             android:key="@string/installSamples"
             android:summary="@string/installSamplesDesc"
             android:title="@string/installSamplesTitle" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/debuggingCategoryTitle">
-        <ListPreference
-            android:defaultValue="@string/betaNotesDefault"
-            android:entries="@array/toggle"
-            android:entryValues="@array/toggleValues"
-            android:key="@string/App_version"
-            android:summary="@string/betaNotesDesc"
-            android:title="@string/betaNotesTitle" />
-        <ListPreference
+        <SwitchPreferenceCompat
             android:defaultValue="@string/debugTimeDefault"
-            android:entries="@array/toggle"
-            android:entryValues="@array/toggleValues"
             android:key="@string/debugTime"
             android:summary="@string/debugTimeDesc"
             android:title="@string/debugTimeTitle" />
-        <ListPreference
+        <SwitchPreferenceCompat
             android:defaultValue="@string/debugLogCatDefault"
-            android:entries="@array/toggle"
-            android:entryValues="@array/toggleValues"
             android:key="@string/debugLogCat"
             android:summary="@string/debugLogCatDesc"
             android:title="@string/debugLogCatTitle" />
-        <ListPreference
+        <SwitchPreferenceCompat
             android:defaultValue="@string/debugTapboxDefault"
-            android:entries="@array/toggle"
-            android:entryValues="@array/toggleValues"
             android:key="@string/debugTapbox"
             android:summary="@string/debugTapboxDesc"
             android:title="@string/debugTapboxTitle" />

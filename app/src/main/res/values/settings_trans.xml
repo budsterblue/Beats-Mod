@@ -92,9 +92,9 @@
   <string name="vibrateHoldDesc">"Keep vibrating during hold arrows"</string>
   <string name="vibrateMissTitle">"Vibrate on Miss"</string>
   <string name="vibrateMissDesc">"Vibrations on a note Miss or Auto-Play tap"</string>
-  <string name="manualOffsetTitle">"Music Offset"</string>
+  <string name="manualOffsetTitle">"Music Offset (In Milliseconds)"</string>
   <string name="manualOffsetDesc">"Manually adjust this only if timing is off-sync"</string>
-  <string name="manualOGGOffsetTitle">"OGG Offset"</string>
+  <string name="manualOGGOffsetTitle">"OGG Offset (In Milliseconds)"</string>
   <string name="manualOGGOffsetDesc">"Manually adjust this if .ogg music is off-sync"</string>
   <string name="showPercentTitle">"Display Percentage"</string>
   <string name="showPercentDesc">"Display percent instead of letter grade in scoreboard"</string>

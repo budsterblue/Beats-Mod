@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/interfaceCategoryTitle">
-        <ListPreference
+        <SwitchPreferenceCompat
             android:defaultValue="@string/fullscreenDefault"
-            android:entries="@array/toggle"
-            android:entryValues="@array/toggleValues"
             android:key="@string/fullscreen"
             android:summary="@string/fullscreenDesc"
             android:title="@string/fullscreenTitle" />
+        <SwitchPreferenceCompat
+            android:defaultValue="@string/showFPSDefault"
+            android:key="@string/showFPS"
+            android:summary="@string/showFPSDesc"
+            android:title="@string/showFPSTitle" />
+        <SwitchPreferenceCompat
+            android:defaultValue="@string/screenshotModeDefault"
+            android:key="@string/screenshotMode"
+            android:summary="@string/screenshotModeDesc"
+            android:title="@string/screenshotModeTitle" />
         <ListPreference
             android:defaultValue="@string/orientationDefault"
             android:entries="@array/orientation"
@@ -15,36 +23,23 @@
             android:key="@string/orientation"
             android:summary="@string/orientationDesc"
             android:title="@string/orientationTitle" />
-        <ListPreference
-            android:defaultValue="@string/showFPSDefault"
-            android:entries="@array/toggle"
-            android:entryValues="@array/toggleValues"
-            android:key="@string/showFPS"
-            android:summary="@string/showFPSDesc"
-            android:title="@string/showFPSTitle" />
-        <ListPreference
-            android:defaultValue="@string/screenshotModeDefault"
-            android:entries="@array/toggle"
-            android:entryValues="@array/toggleValues"
-            android:key="@string/screenshotMode"
-            android:summary="@string/screenshotModeDesc"
-            android:title="@string/screenshotModeTitle" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/backgroundCategoryTitle">
-        <ListPreference
+        <SwitchPreferenceCompat
             android:defaultValue="@string/backgroundShowDefault"
-            android:entries="@array/toggle"
-            android:entryValues="@array/toggleValues"
             android:key="@string/backgroundShow"
             android:summary="@string/backgroundShowDesc"
             android:title="@string/backgroundShowTitle" />
-        <ListPreference
+        <SwitchPreferenceCompat
             android:defaultValue="@string/backgroundSongDefault"
-            android:entries="@array/toggle"
-            android:entryValues="@array/toggleValues"
             android:key="@string/backgroundSong"
             android:summary="@string/backgroundSongDesc"
             android:title="@string/backgroundSongTitle" />
+        <SwitchPreferenceCompat
+            android:defaultValue="@string/backgroundFilteringDefault"
+            android:key="@string/backgroundFiltering"
+            android:summary="@string/backgroundFilteringDesc"
+            android:title="@string/backgroundFilteringTitle" />
         <ListPreference
             android:defaultValue="@string/backgroundBrightnessDefault"
             android:entries="@array/backgroundBrightness"
@@ -52,12 +47,5 @@
             android:key="@string/backgroundBrightness"
             android:summary="@string/backgroundBrightnessDesc"
             android:title="@string/backgroundBrightnessTitle" />
-        <ListPreference
-            android:defaultValue="@string/backgroundFilteringDefault"
-            android:entries="@array/toggle"
-            android:entryValues="@array/toggleValues"
-            android:key="@string/backgroundFiltering"
-            android:summary="@string/backgroundFilteringDesc"
-            android:title="@string/backgroundFilteringTitle" />
     </PreferenceCategory>
 </PreferenceScreen>

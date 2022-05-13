@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/gameplayCategoryTitle">
-        <ListPreference
+        <SwitchPreferenceCompat
             android:defaultValue="@string/autoPlayDefault"
-            android:entries="@array/toggle"
-            android:entryValues="@array/toggleValues"
             android:key="@string/autoPlay"
             android:summary="@string/autoPlayDesc"
             android:title="@string/autoPlayTitle" />
-        <ListPreference
+        <SwitchPreferenceCompat
             android:defaultValue="@string/darkDefault"
-            android:entries="@array/toggle"
-            android:entryValues="@array/toggleValues"
             android:key="@string/dark"
             android:summary="@string/darkDesc"
             android:title="@string/darkTitle" />
@@ -24,17 +20,13 @@
             android:title="@string/noteAppearanceTitle" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/notesCategoryTitle">
-        <ListPreference
+        <SwitchPreferenceCompat
             android:defaultValue="@string/holdsDefault"
-            android:entries="@array/toggle"
-            android:entryValues="@array/toggleValues"
             android:key="@string/holds"
             android:summary="@string/holdsDesc"
             android:title="@string/holdsTitle" />
-        <ListPreference
+        <SwitchPreferenceCompat
             android:defaultValue="@string/jumpsDefault"
-            android:entries="@array/toggle"
-            android:entryValues="@array/toggleValues"
             android:key="@string/jumps"
             android:summary="@string/jumpsDesc"
             android:title="@string/jumpsTitle" />

@@ -112,7 +112,7 @@ public class MenuHome extends Activity {
 		if (Tools.getBooleanSetting(R.string.installSamples, R.string.installSamplesDefault)) {
 			// Make folders and install sample songs
 			Tools.installSampleSongs(this);
-			Tools.putSetting(R.string.installSamples, "0");
+			Tools.putBooleanSetting(R.string.installSamples, false);
 		}
 		
 		if (Tools.getBooleanSetting(R.string.additionalVibrations, R.string.additionalVibrationsDefault)) {
@@ -326,7 +326,7 @@ public class MenuHome extends Activity {
 	private void toggleAutoPlay() {
 		boolean autoPlay = Tools.getBooleanSetting(R.string.autoPlay, R.string.autoPlayDefault);
 		autoPlay = !autoPlay;
-		Tools.putSetting(R.string.autoPlay, String.valueOf(autoPlay ? 1 : 0));
+		Tools.putBooleanSetting(R.string.autoPlay, autoPlay);
 		updateAutoPlay();
 	}
 	

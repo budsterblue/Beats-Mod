@@ -84,7 +84,7 @@ public class MenuStartGame implements Runnable {
 	private void checkOGG() {
 		String musicFilePath = dp.df.getMusic().getPath();
 		if (Tools.isOGGFile(musicFilePath) &&
-			!Tools.getBooleanSetting(R.string.ignoreOGGWarning, R.string.ignoreOGGWarningDefault) && 
+			!Tools.getOldBooleanSetting(R.string.ignoreOGGWarning, R.string.ignoreOGGWarningDefault) &&
 			Integer.parseInt(Tools.getSetting(R.string.manualOGGOffset, R.string.manualOGGOffsetDefault)) == 0
 			) {
 			// OGG warning
@@ -113,7 +113,7 @@ public class MenuStartGame implements Runnable {
 	private void checkDifficulty() {
 		// Different difficulty warning
 		if (availableDifficulty != defaultDifficulty &&
-			!Tools.getBooleanSetting(R.string.ignoreDifficultyWarning, R.string.ignoreDifficultyWarningDefault)
+			!Tools.getOldBooleanSetting(R.string.ignoreDifficultyWarning, R.string.ignoreDifficultyWarningDefault)
 			) {
 			DialogInterface.OnClickListener start_action = (dialog, id) -> {
 				dialog.cancel();

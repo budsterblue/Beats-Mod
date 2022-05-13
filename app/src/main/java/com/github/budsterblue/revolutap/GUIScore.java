@@ -85,12 +85,13 @@ public class GUIScore {
 		this.gameOver = false;
 		this.isPaused = false;
 		this.showPercent = Tools.getBooleanSetting(R.string.showPercent, R.string.showPercentDefault);
+		//this.showPercent = false;
 	}
 	
 	public void loadHighScore(String md5) {
 		if (Tools.getBooleanSetting(R.string.resetHighScores, R.string.resetHighScoresDefault)) {
 			Scoreboard.clearScores();
-			Tools.putSetting(R.string.resetHighScores, "0");
+			Tools.putBooleanSetting(R.string.resetHighScores, false);
 		}
 		this.scoreboard = new Scoreboard(md5);
 		highScore = scoreboard.getScore();

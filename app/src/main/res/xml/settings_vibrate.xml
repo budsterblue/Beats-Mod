@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <ListPreference
-        android:defaultValue="@string/vibrateMissDefault"
+        android:defaultValue="@string/vibrateTapDefault"
         android:entries="@array/vibrateMiss"
         android:entryValues="@array/vibrateMissValues"
         android:key="@string/vibrateTap"
         android:summary="@string/vibrateTapDesc"
         android:title="@string/vibrateTapTitle" />
     <ListPreference
-        android:defaultValue="@string/vibrateMissDefault"
+        android:defaultValue="@string/vibrateHoldDefault"
         android:entries="@array/toggle"
         android:entryValues="@array/toggleValues"
         android:key="@string/vibrateHold"
@@ -21,10 +21,8 @@
         android:key="@string/vibrateMiss"
         android:summary="@string/vibrateMissDesc"
         android:title="@string/vibrateMissTitle" />
-    <ListPreference
+    <SwitchPreferenceCompat
         android:defaultValue="@string/additionalVibrationsDefault"
-        android:entries="@array/toggle"
-        android:entryValues="@array/toggleValues"
         android:key="@string/additionalVibrations"
         android:summary="@string/additionalVibrationsDesc"
         android:title="@string/additionalVibrationsTitle" />
